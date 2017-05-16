@@ -99,3 +99,4 @@ Exemplo:<br />
 "erroSintatico3.in, 2, Falta o nome do programa.\n¨<br />
 Favor seguir o padrão descrito, pois a correção será automatizada. A mensagem
 de erro deve ser sucinta, porém o formato fica a critério da dupla.
+teste
