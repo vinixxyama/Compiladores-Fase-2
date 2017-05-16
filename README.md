@@ -7,8 +7,8 @@ na próxima etapa do trabalho, podendo sofrer alterações em certas regras de p
 
 # 2 Gramática
 Essa seção define a gramática a ser implementada. As palavras reservadas e símbolos da
-linguagem são exibidos entre aspas simples. Elementos da notação da gramática:
-• Uma sequência de símbolos entre { e } pode ser repetida zero ou mais vezes;
+linguagem são exibidos entre aspas simples. Elementos da notação da gramática:_
+• Uma sequência de símbolos entre { e } pode ser repetida zero ou mais vezes;_
 • Uma sequência de símbolos entre [ e ] é opcional;
 • Regras de produção alternativas são separadas por |.
 • Comentários devem ser iniciados por ’#’ e terminam com ’\n’.
