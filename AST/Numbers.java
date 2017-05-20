@@ -7,16 +7,15 @@ package AST;
 import java.util.*;
 
 public class Numbers{
-	public Numbers(ArrayList<Character> real){
-		if(real != null){
+	public Numbers(String real){
 			this.real = real;
-		}
 	}
 
 	public void genC(PW pw){
-		for(int i=0; i<real.size();i++){
-            pw.out.print(real.get(i));
-        }
+		//REFAZER
+		// for(int i=0; i<real.size();i++){
+  //           pw.out.print(real.get(i));
+  //       }
 	}
-	private ArrayList<Character> real;
+	private String real;
 }

@@ -6,24 +6,24 @@ package AST;
 import java.util.*;
 
 public class CompoundStmt{
-	public CompoundStmt(char tk, IfStmt se){
+	public CompoundStmt(String tk, IfStmt se){
 		this.tk = tk;
 		this.se = se;
 	}
-	public CompoundStmt(char tk, WhileStmt wh){
+	public CompoundStmt(String tk, WhileStmt wh){
 		this.tk = tk;
 		this.wh = wh;
 	}
 
 	public void genC(PW pw){
-		if(tk == 'I' || tk == 'L'){
+		if(tk == "if" || tk == "else"){
 			se.genC(pw);
 		}
-		if(tk == 'W'){
+		if(tk == "while"){
 			wh.genC(pw);
 		}
 	}
 	private IfStmt se;
-	private char tk;
+	private String tk;
 	private WhileStmt wh;
 }

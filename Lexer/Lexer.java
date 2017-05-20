@@ -52,6 +52,7 @@ public class Lexer {
         
       //adicionadas novas palavras chaves 
       keywordsTable.put( "void", Symbol.VOID );
+      keywordsTable.put( "program", Symbol.PROGRAM );
       keywordsTable.put( "main", Symbol.MAIN );
       keywordsTable.put( "int", Symbol.INT );
       keywordsTable.put( "double", Symbol.DOUBLE );
@@ -62,7 +63,7 @@ public class Lexer {
       keywordsTable.put( "readInteger", Symbol.READINTEGER );
       keywordsTable.put( "readDouble", Symbol.READDOUBLE );
       keywordsTable.put( "readChar", Symbol.READCHAR );
-        
+      keywordsTable.put( "end", Symbol.END );
     }
      
      
@@ -110,11 +111,8 @@ public class Lexer {
               //percorre o token 
               while ( Character.isLetter( input[tokenPos]) || Character.isDigit( input[tokenPos]) || input[tokenPos]== '_'){
                   ident.append(input[tokenPos]);
-                  tokenPos++;
-                  
+                  tokenPos++; 
               }
-              
-              
               nameVariable = ident.toString();//converte para string e verifica se é palavra reservada
               System.out.print(nameVariable+" ");
               // if identStr is in the list of keywords, it is a keyword !
@@ -122,7 +120,7 @@ public class Lexer {
               if ( value == null ){ //caso não esteja na Lista de palavras reservadas
                 token = Symbol.IDENT; //REVER o que token recebe
               }else{ 
-                token = value; 
+                token = value;
                 if (Character.isDigit(input[tokenPos]))
                   error.signal("Error: Word followed by a number!");
               }
@@ -130,8 +128,10 @@ public class Lexer {
             }else if ( Character.isDigit( ch )){ //caso encontre um digito
                 // get a number
                 StringBuffer number = new StringBuffer();
+                StringBuffer stringValue = new StringBuffer();
                 while ( Character.isDigit( input[tokenPos] ) ) {
                     number.append(input[tokenPos]);
+                    stringValue.append(input[tokenPos]);
                     tokenPos++;
                 }
                 token = Symbol.NUMBER;
@@ -145,6 +145,8 @@ public class Lexer {
                 System.out.print(numberValue+" ");
             }else{
                 tokenPos++;
+                StringBuffer ident = new StringBuffer();
+                ident.append(ch);
                 System.out.print(ch+" ");
                 switch ( ch ) {
                     case '+' :
@@ -212,6 +214,7 @@ public class Lexer {
                       break;
                     case ',' :
                       token = Symbol.COMMA;
+                      nameVariable = ident.toString();
                       break;
                     case '.' :
                       token = Symbol.DOT;
@@ -226,14 +229,7 @@ public class Lexer {
                       token = Symbol.RIGHTBRACKETS;
                       break;
                     case '!' :
-                      if(input[tokenPos] == '='){
-                        tokenPos++;
-                        token = Symbol.NEQ;
-                      }else{
-                        if(input[tokenPos+1] == '=')
-                          error.signal("Error: Bad Formation!");
-                        token = Symbol.EM;
-                      }
+                      nameVariable = ident.toString();
                       break;
                     case '|' :
                       if(input[tokenPos] == '|'){
@@ -245,26 +241,11 @@ public class Lexer {
                       }
                       break;
                     case ':' :
-                      if(input[tokenPos] == '='){
-                        System.out.print("= ");
-                        tokenPos++;
-                        token = Symbol.DQ;
-                      }else{
-                        error.signal("Error: Bad Formation!");
-                      }
+                        token = Symbol.COLON;
                       break;
-                    case '\'' : 
-                      token = Symbol.IBAR;
-                      charValue = input[tokenPos];
-                      System.out.print(charValue+" ");
-                      tokenPos++;
-                      System.out.print("' ");
-                      if ( input[tokenPos] != '\'' ) 
-                        error.signal("Error: Illegal literal character" + input[tokenPos-1] + "!");
-                      tokenPos++;
+                    case '\'' :
+                        token = Symbol.IBAR;
                       break;
-                    default :
-                      error.signal("Error: Invalid Character: '" + ch + "'!");
                 }
             }
           }

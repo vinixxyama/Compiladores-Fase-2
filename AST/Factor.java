@@ -14,11 +14,11 @@ public class Factor{
 		this.ch = ch;
 	}
 
-	public Factor(ArrayList<Character> str){
+	public Factor(String str){
 		this.str = str;
 	}
 
-	public ArrayList<Character> getStr(){
+	public String getStr(){
 		return str;
 	}
 
@@ -31,9 +31,10 @@ public class Factor{
 
 	public void genC(PW pw){
 		if(str != null){
-			for(int i=0; i<str.size();i++){
-            	pw.out.print(str.get(i));
-        	}
+			//PRECISA MUDAR
+			// for(int i=0; i<str.size();i++){
+   //          	pw.out.print(str.get(i));
+   //      	}
 		}
 		if(ch != '\0'){
 			pw.out.print(ch);
@@ -43,6 +44,6 @@ public class Factor{
 		}
     }
 	private Numbers num;
-	private ArrayList<Character> str;
+	private String str;
 	private char ch;
 }

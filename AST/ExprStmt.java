@@ -5,7 +5,7 @@ Daniel Valim    RA  511315
 package AST;
 
 public class ExprStmt {
- 	public ExprStmt(char var, char atribuicao, Comparison co, int flag){
+ 	public ExprStmt(String var, String atribuicao, Comparison co, int flag){
         this.var= var;
         this.atribuicao = atribuicao;
 		this.co = co;
@@ -24,8 +24,8 @@ public class ExprStmt {
 		pw.out.println(";");
     }
 
-        private char  var;
-        private char atribuicao;
+        private String  var;
+        private String atribuicao;
         private Comparison co;
         private int flag;
 }

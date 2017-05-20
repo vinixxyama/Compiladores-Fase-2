@@ -17,12 +17,7 @@ public class Stmt{
 	}
 
 	public void genC(PW pw){
-		if(k == 'S'){
-			simplestmt.genC(pw);
-		}
-		if(k == 'C'){
-			compound.genC(pw);
-		}	
+		
 	}
 
 	private SimpleStmt simplestmt;

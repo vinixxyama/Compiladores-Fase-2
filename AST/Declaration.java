@@ -6,17 +6,17 @@ package AST;
 import java.util.ArrayList;
 
 public class Declaration {
-	public Declaration(char tipo, char name, int tamanho) {
+	public Declaration(String tipo, String name, int tamanho) {
 		this.tipo = tipo;
 		this.name = name;
 		this.tamanho = tamanho;
 	}
 
-	public char getName(){
+	public String getName(){
 		return name;
 	}
 
-	public char getType(){
+	public String getType(){
 		return tipo;
 	}
 
@@ -33,7 +33,7 @@ public class Declaration {
 		}
 	}
 
-	private char name;
-	private char tipo;
+	private String name;
+	private String tipo;
 	private int tamanho;
 }
