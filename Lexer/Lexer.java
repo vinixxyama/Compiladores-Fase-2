@@ -54,9 +54,7 @@ public class Lexer {
       keywordsTable.put( "void", Symbol.VOID );
       keywordsTable.put( "program", Symbol.PROGRAM );
       keywordsTable.put( "main", Symbol.MAIN );
-      keywordsTable.put( "int", Symbol.INT );
-      keywordsTable.put( "double", Symbol.DOUBLE );
-      keywordsTable.put( "char", Symbol.CHAR );
+      keywordsTable.put( "int", Symbol.INT);
       keywordsTable.put( "while", Symbol.WHILE );
       keywordsTable.put( "break", Symbol.BREAK );
       keywordsTable.put( "print", Symbol.PRINT );
@@ -64,6 +62,8 @@ public class Lexer {
       keywordsTable.put( "readDouble", Symbol.READDOUBLE );
       keywordsTable.put( "readChar", Symbol.READCHAR );
       keywordsTable.put( "end", Symbol.END );
+      keywordsTable.put( "string", Symbol.STRING );
+      keywordsTable.put( "float", Symbol.FLOAT );
     }
      
      

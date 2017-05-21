@@ -6,21 +6,22 @@ package AST;
 import java.util.ArrayList;
 
 public class Variable {
-	// public Variable( String tipo, char name) {
-	// 	this.tipo = tipo;
-	// 	this.name = name;
-	// }
 	
-	public Variable( char name, int value ) {
+	public Variable( String name, int value ) {
 		this.name = name;
 		this.value = value;
+	}
+
+	public Variable( String name, String value2 ) {
+		this.name = name;
+		this.value2 = value2;
 	}
 
 	public void genC() {
 		System.out.println(name + " = " + value + ";" );
 	}
 
-	private char name;
+	private String name;
 	private int value;
-	private String tipo;
+	private String value2;
 }

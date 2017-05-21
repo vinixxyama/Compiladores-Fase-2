@@ -6,34 +6,41 @@ package AST;
 import java.util.ArrayList;
 
 public class Declaration {
-	public Declaration(String tipo, String name, int tamanho) {
-		this.tipo = tipo;
-		this.name = name;
-		this.tamanho = tamanho;
-	}
-
-	public String getName(){
-		return name;
-	}
-
-	public String getType(){
-		return tipo;
-	}
-
-	public void setTamanho(int tamanho){
-		this.tamanho = tamanho;
-	}
-
-	public void genC(PW pw) {
-		pw.out.print(name);
-		if(tamanho > 1){
-			pw.out.print("[");
-			pw.out.print(tamanho);
-			pw.out.print("]");
+	public Declaration(ArrayList<String> deck) {
+		if(deck != null){
+			this.deck = deck;
 		}
 	}
 
-	private String name;
-	private String tipo;
-	private int tamanho;
+	public void genC(PW pw) {
+		int i=0;
+		while(i < deck.size()){
+			if(deck.get(i).equals("int")){
+				pw.out.print(deck.get(i)+" ");
+				i++;
+				pw.out.print(deck.get(i));
+				i++;
+			}else if(deck.get(i).equals("string")){
+				pw.out.print(deck.get(i)+" ");
+				i++;
+				pw.out.print(deck.get(i));
+				i++;
+			}else if(deck.get(i).equals("float")){
+				pw.out.print(deck.get(i)+" ");
+				i++;
+				pw.out.print(deck.get(i));
+				i++;
+			}
+
+			if(deck.get((i+1)%deck.size()) != null){
+				pw.out.print(", ");
+				pw.out.print(deck.get(i));
+				i++;
+			}else{
+			}
+		}
+		pw.out.println(";");
+	}
+
+	ArrayList<String> deck = new ArrayList<String>();
 }

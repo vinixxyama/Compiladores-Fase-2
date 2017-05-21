@@ -36,26 +36,20 @@ public class Compiler {
         if(lexer.token == Symbol.COLON){
           lexer.nextToken();
           while(lexer.token != Symbol.END){
+
             if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING){
               while(lexer.token != Symbol.SEMICOLON){
                 if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING){
                   decl.add(declaration());
-                }else if(lexer.token == Symbol.IDENT || lexer.token == Symbol.COMMA){
-                  decl.add(declaration());
                 }
               }
-              decl.add(declaration());
               lexer.nextToken();
             }
             if(lexer.token == Symbol.IDENT || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.BREAK || lexer.token == Symbol.PRINT){
-              st.add(stmt());
+              //st.add(stmt());
             }
           }
-        }else{
-          
         }
-      }else{
-        
       }
 
       if(lexer.token == Symbol.END){
@@ -65,21 +59,38 @@ public class Compiler {
     }
 
     private Declaration declaration(){
-      String var = null; 
-      if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING){
+      String var = null;
+      ArrayList<String> varia = new ArrayList<String>();
+      if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING || lexer.token == Symbol.BOOLEAN){
         tipo = type();
+        varia.add(tipo);
       }
-      if(lexer.token == Symbol.IDENT){
-        var = name();
-      }else if(lexer.token == Symbol.SEMICOLON){
-        var = lexer.getNameVariable();
-      }else if(lexer.token == Symbol.COMMA){
-        var = lexer.getNameVariable();
-        lexer.nextToken();
-      }else{
-        
+      while(lexer.token != Symbol.SEMICOLON){
+        if(lexer.token == Symbol.IDENT){
+          varia.add(name());
+          if(lexer.token == Symbol.LEFTBRACKETS){
+            varia.add("[");
+            lexer.nextToken();
+            if(lexer.token == Symbol.NUMBER){
+              varia.add(lexer.getStringValue());
+              lexer.nextToken();
+            }else{
+              //error nao eh numero
+            }
+            if(lexer.token == Symbol.RIGHTBRACKETS){
+              varia.add("]");
+              lexer.nextToken();
+            }else{
+              //error falta chaves
+            }
+          }
+        }
+        if(lexer.token == Symbol.COMMA){
+          lexer.nextToken();
+        }
       }
-      return new Declaration(tipo, var, 0);
+
+      return new Declaration(varia);
     }
 
     private Stmt stmt(){
@@ -423,7 +434,7 @@ public class Compiler {
         return dig;
     }
 
-    private ArrayList<Declaration> decl;;
+    private ArrayList<Declaration> decl;
     private int lineNumber;
     private int  tokenPos;
     private char []input;
@@ -435,5 +446,5 @@ public class Compiler {
     private Lexer lexer;
     private Hashtable<String, Variable> variableTable; // variaveis criadas no sistema
     private CompilerError error;
-    private ArrayList<Variable> variableDeclList; 
+    
 }
