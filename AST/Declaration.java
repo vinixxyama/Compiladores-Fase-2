@@ -11,11 +11,13 @@ public class Declaration {
 			this.deck = deck;
 		}
 	}
+	public String getvalue(int i){
+		return deck.get(i);
+	}
 
 	public void genC(PW pw) {
 		int i=0;
-		while(i < deck.size()){
-			if(deck.get(i).equals("int")){
+		if(deck.get(i).equals("int")){
 				pw.out.print(deck.get(i)+" ");
 				i++;
 				pw.out.print(deck.get(i));
@@ -31,7 +33,7 @@ public class Declaration {
 				pw.out.print(deck.get(i));
 				i++;
 			}
-
+		while(i < deck.size()){
 			if(deck.get((i+1)%deck.size()) != null){
 				pw.out.print(", ");
 				pw.out.print(deck.get(i));

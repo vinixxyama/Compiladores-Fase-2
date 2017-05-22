@@ -36,10 +36,9 @@ public class Compiler {
         if(lexer.token == Symbol.COLON){
           lexer.nextToken();
           while(lexer.token != Symbol.END){
-
-            if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING){
+            if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING || lexer.token == Symbol.BOOLEAN){
               while(lexer.token != Symbol.SEMICOLON){
-                if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING){
+                if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING || lexer.token == Symbol.BOOLEAN){
                   decl.add(declaration());
                 }
               }
@@ -61,6 +60,7 @@ public class Compiler {
     private Declaration declaration(){
       String var = null;
       ArrayList<String> varia = new ArrayList<String>();
+      Declaration dec = null;
       if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT || lexer.token == Symbol.STRING || lexer.token == Symbol.BOOLEAN){
         tipo = type();
         varia.add(tipo);
@@ -89,8 +89,8 @@ public class Compiler {
           lexer.nextToken();
         }
       }
-
-      return new Declaration(varia);
+      dec = new Declaration(varia);
+      return dec;
     }
 
     private Stmt stmt(){

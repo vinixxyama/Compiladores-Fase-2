@@ -18,14 +18,14 @@ public class Program {
 		}
     }
     public void genC(PW pw) {
-        int i =0;
+        int i = 0;
+        String aux = null;
         pw.out.println("#include <stdio.h>");
         pw.out.println("#include <string.h>");
         pw.out.println("");
         pw.out.println("int main(){");
         if(declList != null){
             while(i < declList.size()){
-                System.out.print("entrou");
                 declList.get(i).genC(pw);
                 i++;
             }
