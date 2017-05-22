@@ -11,6 +11,10 @@ public class Numbers{
 			this.real = real;
 	}
 
+	public String getReal(){
+		return real;
+	}
+	
 	public void genC(PW pw){
 		//REFAZER
 		// for(int i=0; i<real.size();i++){

@@ -45,12 +45,11 @@ public class Compiler {
               lexer.nextToken();
             }
             if(lexer.token == Symbol.IDENT || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.BREAK || lexer.token == Symbol.PRINT){
-              //st.add(stmt());
+              st.add(stmt());
             }
           }
         }
       }
-
       if(lexer.token == Symbol.END){
         lexer.nextToken();
       }
@@ -112,11 +111,6 @@ public class Compiler {
       ArrayList<PrintStmt> pt = new ArrayList<PrintStmt>();
       if(lexer.token == Symbol.IDENT){
         si = new SimpleStmt(exprStmt());
-        if(lexer.token == Symbol.SEMICOLON){
-          lexer.nextToken();
-        }else{
-          
-        }
       }else if(lexer.token == Symbol.PRINT){
         tk = 'R';
         lexer.nextToken();
@@ -251,45 +245,82 @@ public class Compiler {
 
     //VAI TER QUE MEXER
     private ExprStmt exprStmt(){
-      Comparison aux = null;
-      ArrayList<Expr> aux2 = null;
-      Factor aux3 = null;
-      ArrayList<Character> aux4 = null;
-      ExprStmt novo;
-      //pega o name
-      int len=0, flag = 0;
+      ArrayList<String> strg = new ArrayList<String>();
+      Variable aux = null;
+      Numbers aux2 = null;
+      ExprStmt novo = null;
+      int i = 0;
       String ctr1 = null;
-      String equal = null;
+      String aux3 = null;
+      StringBuffer ident = new StringBuffer();
       ctr1 = name();
       //ve se o proximo eh = se sim consome
       if(lexer.token == Symbol.ASSIGN){
-        equal = lexer.getNameVariable();
         lexer.nextToken();
       }else{
-        
+        //ERROR ATRIBUIÇAO SEM VALOR
       }
-      aux = comparison();
-      aux2 = aux.getExpr();
-
-      //VAI TER QUE MEXER
-      // for(int i=0;i<aux2.size();i++){
-      //   aux3 = aux2.get(i).getFactor();
-      //   if(aux3.getStr() != null)
-      //     len = aux3.getStr().size();
-      //   if(len >= 1){
-      //     for(int j=0;j<decl.size();j++){
-      //       if(decl.get(j).getType() == 'S'){
-      //         if(decl.get(j).getName() == ctr1){
-      //           decl.get(j).setTamanho(len);
-      //           flag = 1;
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
-      
-      //chama comparison
-      novo = new ExprStmt(ctr1, equal, aux, flag);
+      if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.IDENT || lexer.token == Symbol.IBAR){
+        //verificar se variavel pode receber o valor
+        for(i = 0;i<decl.size();i++){
+          strg = decl.get(i).getArray();
+          for(int j=0;j<strg.size();j++){
+            if(ctr1.equals(strg.get(j))){
+              if(lexer.token == Symbol.NUMBER && strg.get(0).equals("int")){
+                aux2 = numbers();
+                ident.append(aux2.getReal());
+                if(lexer.token == Symbol.LEFTBRACKETS){
+                  ident.append("[");
+                  lexer.nextToken();
+                  while(lexer.token != Symbol.RIGHTBRACKETS){
+                    if(lexer.token == Symbol.COMMA){
+                      ident.append(",");
+                      lexer.nextToken();
+                    }else{
+                      ident.append(lexer.getNameVariable());
+                      lexer.nextToken();
+                    }
+                  }
+                  ident.append(lexer.getNameVariable());
+                  lexer.nextToken();
+                }
+                aux3 = ident.toString();
+                aux = new Variable(ctr1, aux3);
+              }else if(lexer.token == Symbol.IBAR && strg.get(0).equals("string")){
+                ident.append("'");
+                lexer.nextToken();
+                while(lexer.token !=  Symbol.IBAR){
+                  ident.append(lexer.getNameVariable());
+                  lexer.nextToken();
+                }
+                ident.append("'");
+                lexer.nextToken();
+                aux3 = ident.toString();
+                aux = new Variable(ctr1, aux3);
+                lexer.nextToken();
+              }else if(lexer.token == Symbol.NUMBER && strg.get(0).equals("float")){
+                aux2 = numbers();
+                aux = new Variable(ctr1, aux2.getReal());
+                
+              }else if(lexer.token == Symbol.IDENT && strg.get(0).equals("boolean")){
+                aux = new Variable(ctr1, lexer.getNameVariable());
+                
+                lexer.nextToken();
+              }else{
+                //error valor nao bate com a variavel ex int recebendo string;
+              }
+            }
+          }
+        }
+      }else{
+        //error NADA DECLARADO;
+      }
+      if(lexer.token == Symbol.SEMICOLON){
+        lexer.nextToken();
+      }
+      System.out.println("name="+aux.getname()+" ");
+      System.out.println("value="+aux.getvalue()+" ");
+      novo = new ExprStmt(aux);
       return novo;
     }
 
@@ -330,14 +361,15 @@ public class Compiler {
             ex = new Expr(factor());
             listexpr.add(ex);
             flag = 0;
-          }else if((lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR) && flag == 0){
+          }else if((lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN) && flag == 0){
             ex = new Expr(factor());
             listexpr.add(ex);
             flag = 1;
           }else if(lexer.token == Symbol.SEMICOLON && flag == 1){
             break;
           }else if(lexer.token != Symbol.SEMICOLON && flag == 1){
-            
+            //error
+            break;
           }else if(flag == 0){
             break;
           }
@@ -346,22 +378,21 @@ public class Compiler {
       return listexpr;
     }
 
-    //Factor ::= Name | Number | String
+    //Factor ::= [’+’|’-’] Atom {^ Factor}
+    //Atom ::= Name[ ‘[’(Number | Name)‘]’ ] | Number | String | ’True’ | ’False’
     private Factor factor(){
       Factor f = null;
       if(lexer.token == Symbol.LT || lexer.token == Symbol.GT ||lexer.token == Symbol.MULT || lexer.token == Symbol.DIV|| lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS || lexer.token == Symbol.COMMA){
         f = new Factor(lexer.getNameVariable());
         lexer.nextToken();
-      }else{
-        if(lexer.token ==Symbol.IDENT){
+      }else if(lexer.token ==Symbol.IDENT){
           f = new Factor(name());
         }else if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
           f = new Factor(numbers());
         }else if(lexer.token == Symbol.IBAR){
           f = new Factor(string());
-        }else{
-          
-        }
+        }else if(lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE){
+          f = new Factor(lexer.getNameVariable());
       }
       return f;
     }
@@ -378,18 +409,21 @@ public class Compiler {
       if(lexer.token == Symbol.IDENT){
         ctr = lexer.getNameVariable();
         lexer.nextToken();
+
       }
       return ctr;
     }
 
     private String string(){
+      StringBuffer ident = new StringBuffer();
       String tok = null;
       if(lexer.token == Symbol.IBAR){
         lexer.nextToken();
-        while(lexer.token != Symbol.IBAR && lexer.token != Symbol.SEMICOLON){
-          tok = lexer.getNameVariable();
+        while(lexer.token == Symbol.IDENT){
+          ident.append(lexer.getNameVariable());
           lexer.nextToken();
         }
+        tok = ident.toString();
         if(lexer.token == Symbol.IBAR)
           lexer.nextToken();
         //else ERROR() AKI
@@ -409,17 +443,23 @@ public class Compiler {
       if(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
         ident.append(lexer.getNameVariable());
         lexer.nextToken();
-        ret = new Numbers(digito);
-      }else if(lexer.token == Symbol.NUMBER){
-        ident.append(lexer.getStringValue());
+      }
+      if(lexer.token == Symbol.NUMBER){
+        while(lexer.token == Symbol.NUMBER){
+          ident.append(lexer.getStringValue());
+          lexer.nextToken();
+        }
         if(lexer.token == Symbol.DOT){
           ident.append(lexer.getNameVariable());
           lexer.nextToken();
-          ident.append(lexer.getNameVariable());
+          while(lexer.token == Symbol.NUMBER){
+            ident.append(lexer.getStringValue());
+            lexer.nextToken();
+          }
         }
         digito = ident.toString();
-        ret = new Numbers(digito);
       }
+      ret = new Numbers(digito);
       return ret;
     }
 

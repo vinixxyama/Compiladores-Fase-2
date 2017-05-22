@@ -128,15 +128,16 @@ public class Lexer {
             }else if ( Character.isDigit( ch )){ //caso encontre um digito
                 // get a number
                 StringBuffer number = new StringBuffer();
-                StringBuffer stringValue = new StringBuffer();
+                StringBuffer str = new StringBuffer();
                 while ( Character.isDigit( input[tokenPos] ) ) {
                     number.append(input[tokenPos]);
-                    stringValue.append(input[tokenPos]);
+                    str.append(input[tokenPos]);
                     tokenPos++;
                 }
                 token = Symbol.NUMBER;
                 try{
                    numberValue = Integer.valueOf(number.toString()).intValue();
+                   stringValue = str.toString();
                 }catch( NumberFormatException e ){
                    error.signal("Error: Number out of limits!");
                 }
@@ -218,6 +219,7 @@ public class Lexer {
                       break;
                     case '.' :
                       token = Symbol.DOT;
+                      nameVariable = ident.toString();
                       break;
                     case ';' :
                       token = Symbol.SEMICOLON;
@@ -229,6 +231,7 @@ public class Lexer {
                       token = Symbol.RIGHTBRACKETS;
                       break;
                     case '!' :
+                      token = Symbol.EM;
                       nameVariable = ident.toString();
                       break;
                     case '|' :
@@ -245,6 +248,7 @@ public class Lexer {
                       break;
                     case '\'' :
                         token = Symbol.IBAR;
+
                       break;
                 }
             }

@@ -30,6 +30,12 @@ public class Program {
                 i++;
             }
         }
+        if(stm != null){
+            while(i < stm.size()){
+                stm.get(i).genC(pw);
+                i++;
+            }
+        }
         pw.out.println("");
         pw.out.println("return 0;");
         pw.out.println("}");

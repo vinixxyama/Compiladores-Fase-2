@@ -3,29 +3,16 @@ Vinicius Yamamoto     RA 490105
 Daniel Valim    RA  511315
 */
 package AST;
+import java.util.ArrayList;
 
 public class ExprStmt {
- 	public ExprStmt(String var, String atribuicao, Comparison co, int flag){
-        this.var= var;
-        this.atribuicao = atribuicao;
-		this.co = co;
-		this.flag = flag;
+ 	public ExprStmt(Variable var){
+        	this.var = var;
 	}
 
 	public void genC(PW pw){
-		pw.out.print(var + " = ");
-		if(flag == 0){
-			co.genC(pw);
-		}else{
-			pw.out.print("\"");
-			co.genC(pw);
-			pw.out.print("\"");
-		}
-		pw.out.println(";");
+		
+		var.genC(pw);
     }
-
-        private String  var;
-        private String atribuicao;
-        private Comparison co;
-        private int flag;
+	private Variable var;
 }

@@ -11,8 +11,8 @@ public class Declaration {
 			this.deck = deck;
 		}
 	}
-	public String getvalue(int i){
-		return deck.get(i);
+	public ArrayList<String> getArray(){
+		return deck;
 	}
 
 	public void genC(PW pw) {
@@ -35,9 +35,18 @@ public class Declaration {
 			}
 		while(i < deck.size()){
 			if(deck.get((i+1)%deck.size()) != null){
-				pw.out.print(", ");
-				pw.out.print(deck.get(i));
-				i++;
+				if(deck.get(i).equals("[")){
+					pw.out.print(deck.get(i));
+					i++;
+					pw.out.print(deck.get(i));
+					i++;
+					pw.out.print(deck.get(i));
+					i++;
+				}else{
+					pw.out.print(", ");
+					pw.out.print(deck.get(i));
+					i++;
+				}
 			}else{
 			}
 		}

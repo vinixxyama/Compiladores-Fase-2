@@ -17,7 +17,9 @@ public class Stmt{
 	}
 
 	public void genC(PW pw){
-		
+		if(k == 'S'){
+			simplestmt.genC(pw);
+		}
 	}
 
 	private SimpleStmt simplestmt;

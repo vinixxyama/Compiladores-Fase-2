@@ -20,7 +20,13 @@ public class SimpleStmt{
 	}
 
 	public void genC(PW pw){
-		
+		if(tk == 'R'){
+
+		}else if(tk == 'B'){
+
+		}else{
+			exstmt.genC(pw);
+		}
 	}
 	private ArrayList<PrintStmt> printStmt;
 	private ExprStmt exstmt;
