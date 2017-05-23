@@ -30,6 +30,7 @@ public class Program {
                 i++;
             }
         }
+        i=0;
         if(stm != null){
             while(i < stm.size()){
                 stm.get(i).genC(pw);

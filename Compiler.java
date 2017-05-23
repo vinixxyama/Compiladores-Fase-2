@@ -114,13 +114,7 @@ public class Compiler {
       }else if(lexer.token == Symbol.PRINT){
         tk = 'R';
         lexer.nextToken();
-        while(lexer.token != Symbol.SEMICOLON){
-          if(lexer.token == Symbol.COMMA){
-            lexer.nextToken();
-          }
-          pt.add(printstm());
-        }
-        lexer.nextToken();
+        pt.add(printstm());
         si = new SimpleStmt(tk,pt);
       }else if(lexer.token == Symbol.BREAK){
         tk = 'B';
@@ -145,25 +139,31 @@ public class Compiler {
 
     private PrintStmt printstm(){
       PrintStmt prt = null;
-      Comparison aux = null;
-      ArrayList<Expr> aux2 = null;
+      ArrayList<String> strg = new ArrayList<String>();
       Factor aux3 = null;
-      ArrayList<Character> aux4 = null;
-      char t = ' ';
-      char c = ' ';
+      StringBuffer frase = new StringBuffer();
 
+      if(lexer.token == Symbol.IBAR){
+        lexer.nextToken();
+        while(lexer.token != Symbol.IBAR || lexer.token != Symbol.SEMICOLON){
+          if(lexer.token == Symbol.IDENT){
+            frase.append(lexer.getNameVariable());
+          }else if(lexer.token == Symbol.NUMBER){
+            frase.append(lexer.getStringValue());
+          }
+          lexer.nextToken();
+        }
+        if(lexer.token != Symbol.IBAR){
+          //error()
+        }else{
+          lexer.nextToken();
+        }
+        if(lexer.token == Symbol.COMMA){
+
+        }
+      }
       aux = comparison();
       aux2 = aux.getExpr();
-      //VAI PRECISAR CONSERTAR
-      // for(int i=0;i<aux2.size();i++){
-      //   aux3 = aux2.get(i).getFactor();
-      //   for(int j=0;j<decl.size();j++){
-      //     if(decl.get(j).getName() == aux3.getName()){
-      //       t = decl.get(j).getType();
-      //       c = decl.get(j).getName();
-      //     }
-      //   }
-      // }
       prt = new PrintStmt(aux, t, c);
       return prt;
     }
@@ -253,22 +253,37 @@ public class Compiler {
       String ctr1 = null;
       String aux3 = null;
       StringBuffer ident = new StringBuffer();
+      StringBuffer vet = new StringBuffer();
+      int flag = 0;
+
       ctr1 = name();
+      //se for vetor salva o vetor
+      if(lexer.token == Symbol.LEFTBRACKETS){
+        vet.append(ctr1);
+        vet.append("[");
+        lexer.nextToken();
+        while(lexer.token != Symbol.RIGHTBRACKETS){
+            vet.append(lexer.getStringValue());
+            lexer.nextToken();
+
+        }
+        vet.append("]");
+        lexer.nextToken();
+        flag = 1;
+      }
       //ve se o proximo eh = se sim consome
       if(lexer.token == Symbol.ASSIGN){
         lexer.nextToken();
       }else{
         //ERROR ATRIBUIÇAO SEM VALOR
       }
-      if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.IDENT || lexer.token == Symbol.IBAR){
+      if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.IDENT || lexer.token == Symbol.IBAR || lexer.token == Symbol.LEFTBRACKETS){
         //verificar se variavel pode receber o valor
         for(i = 0;i<decl.size();i++){
           strg = decl.get(i).getArray();
           for(int j=0;j<strg.size();j++){
             if(ctr1.equals(strg.get(j))){
-              if(lexer.token == Symbol.NUMBER && strg.get(0).equals("int")){
-                aux2 = numbers();
-                ident.append(aux2.getReal());
+              if((lexer.token == Symbol.NUMBER || lexer.token == Symbol.LEFTBRACKETS) && strg.get(0).equals("int")){
                 if(lexer.token == Symbol.LEFTBRACKETS){
                   ident.append("[");
                   lexer.nextToken();
@@ -277,15 +292,23 @@ public class Compiler {
                       ident.append(",");
                       lexer.nextToken();
                     }else{
-                      ident.append(lexer.getNameVariable());
+                      ident.append(lexer.getStringValue());
                       lexer.nextToken();
                     }
                   }
-                  ident.append(lexer.getNameVariable());
+                  ident.append("]");
                   lexer.nextToken();
+                }else{
+                  aux2 = numbers();
+                  ident.append(aux2.getReal());
                 }
                 aux3 = ident.toString();
-                aux = new Variable(ctr1, aux3);
+                if(flag == 1){
+                  ctr1 = vet.toString();
+                  aux = new Variable(ctr1, aux3);
+                }else{
+                  aux = new Variable(ctr1, aux3);
+                }
               }else if(lexer.token == Symbol.IBAR && strg.get(0).equals("string")){
                 ident.append("'");
                 lexer.nextToken();
@@ -304,7 +327,6 @@ public class Compiler {
                 
               }else if(lexer.token == Symbol.IDENT && strg.get(0).equals("boolean")){
                 aux = new Variable(ctr1, lexer.getNameVariable());
-                
                 lexer.nextToken();
               }else{
                 //error valor nao bate com a variavel ex int recebendo string;
@@ -318,8 +340,6 @@ public class Compiler {
       if(lexer.token == Symbol.SEMICOLON){
         lexer.nextToken();
       }
-      System.out.println("name="+aux.getname()+" ");
-      System.out.println("value="+aux.getvalue()+" ");
       novo = new ExprStmt(aux);
       return novo;
     }
