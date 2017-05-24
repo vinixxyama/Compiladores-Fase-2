@@ -7,6 +7,7 @@ public enum Symbol {
       PLUS("+"),
       MINUS("-"),
       MULT("*"),
+      EXPONENCIAL("^"),
       DIV("/"),
       LT("<"),
       LE("<="),
@@ -65,7 +66,8 @@ public enum Symbol {
       FALSE("false"),
       TRUE("true"),
       BOOLEAN("boolean"),
-      INTEGER("integer");
+      INTEGER("integer"),
+      FOR("for");
 
       Symbol(String name) {
           this.name = name;

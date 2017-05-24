@@ -6,17 +6,18 @@ package AST;
 import java.util.*;
 
 public class Expr {
-	public Expr(Factor f){
-		this.f = f;
-	}
-
-	public Factor getFactor(){
-		return f;
+	public Expr(Term t, char op){
+		this.t = t;
 	}
 
     public void genC(PW pw){
-    	f.genC(pw);
+    	if(op != '\0'){
+    		t.genC(pw);
+    		pw.out.print(op);
+    	}else{
+    		t.genC(pw);
+    	}
     }
-   	private Factor f;
+   	private Term t;
 	private char op;
 }

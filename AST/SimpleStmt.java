@@ -20,8 +20,12 @@ public class SimpleStmt{
 	}
 
 	public void genC(PW pw){
+		int i = 0;
 		if(tk == 'R'){
-
+			while(i < printStmt.size()){
+				printStmt.get(i).genC(pw);
+				i++;
+			}
 		}else if(tk == 'B'){
 
 		}else{

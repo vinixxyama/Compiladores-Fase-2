@@ -64,6 +64,7 @@ public class Lexer {
       keywordsTable.put( "end", Symbol.END );
       keywordsTable.put( "string", Symbol.STRING );
       keywordsTable.put( "float", Symbol.FLOAT );
+      keywordsTable.put("for", Symbol.FOR);
     }
      
      
@@ -148,22 +149,32 @@ public class Lexer {
                 tokenPos++;
                 StringBuffer ident = new StringBuffer();
                 ident.append(ch);
+                nameVariable = ident.toString();
                 System.out.print(ch+" ");
                 switch ( ch ) {
                     case '+' :
                       token = Symbol.PLUS;
+                      charValue = ch;
                       break;
                     case '-' :
                       token = Symbol.MINUS;
+                      charValue = ch;
                       break;
                     case '*' :
                       token = Symbol.MULT;
+                      charValue = ch;
                       break;
                     case '/' :
                       token = Symbol.DIV;
+                      charValue = ch;
                       break;
                     case '%' :
                       token = Symbol.PCT;
+                      charValue = ch;
+                      break;
+                    case '^' :
+                      token = Symbol.EXPONENCIAL;
+                      charValue = ch;
                       break;
                     case '<' :
                       if ( input[tokenPos] == '=' ) {
@@ -215,11 +226,11 @@ public class Lexer {
                       break;
                     case ',' :
                       token = Symbol.COMMA;
-                      nameVariable = ident.toString();
+                      charValue = ch;
                       break;
                     case '.' :
                       token = Symbol.DOT;
-                      nameVariable = ident.toString();
+                      charValue = ch;
                       break;
                     case ';' :
                       token = Symbol.SEMICOLON;
@@ -232,7 +243,7 @@ public class Lexer {
                       break;
                     case '!' :
                       token = Symbol.EM;
-                      nameVariable = ident.toString();
+                      charValue = ch;
                       break;
                     case '|' :
                       if(input[tokenPos] == '|'){

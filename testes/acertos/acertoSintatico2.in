@@ -1,0 +1,14 @@
+program acertoSintatico2:
+
+int a;
+float x;
+string c, d;
+
+a = 2;
+x = 31.23456;
+c = '!';
+d = 'Ola Mundo';
+
+print ' Hello , world', c;
+
+end

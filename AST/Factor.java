@@ -6,20 +6,20 @@ package AST;
 import java.util.ArrayList;
 
 public class Factor{
-	public Factor(Numbers num){
-		this.num = num;
-	}
-	public Factor(String str){
-		this.str = str;
-	}
-
-	public String getStr(){
-		return str;
+	public Factor(Atom at, char op){
+		this.at = at;
+		this.op = op;
 	}
 
 	public void genC(PW pw){
-		
+		if(op != '\0'){
+			pw.out.print(op);
+			at.genC(pw);
+		}else{
+			at.genC(pw);
+		}
     }
-	private Numbers num;
-	private String str;
+
+	private Atom at;
+	private char op;
 }

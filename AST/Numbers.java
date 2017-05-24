@@ -16,10 +16,7 @@ public class Numbers{
 	}
 	
 	public void genC(PW pw){
-		//REFAZER
-		// for(int i=0; i<real.size();i++){
-  //           pw.out.print(real.get(i));
-  //       }
+		pw.out.print(real);
 	}
 	private String real;
 }

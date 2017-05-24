@@ -6,25 +6,21 @@ package AST;
 import java.util.*;
 
 public class PrintStmt{
-	public PrintStmt(Comparison co, char t, char ch){
-		this.t = t;
-		this.co = co;
-		this.ch = ch;
-	}
-
-	public char getTipo(){
-		return t;
-	}
-
-	public char getch(){
-		return ch;
+	public PrintStmt(ArrayList<OrTest> o){
+		if(o != null){
+			this.o = o;
+		}
 	}
 
 	public void genC(PW pw){
-		co.genC(pw);
+		int i=0;
+		pw.out.print("printf(");
+		while(i < o.size()){
+			o.get(i).genC(pw);
+			i++;
+		}
+		pw.out.print(");");
 	}
 	
-	private char t;
-	private Comparison co;
-	private char ch;
+	private ArrayList<OrTest> o;
 }

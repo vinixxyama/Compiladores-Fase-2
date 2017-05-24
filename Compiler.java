@@ -47,6 +47,7 @@ public class Compiler {
             if(lexer.token == Symbol.IDENT || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.BREAK || lexer.token == Symbol.PRINT){
               st.add(stmt());
             }
+
           }
         }
       }
@@ -136,36 +137,67 @@ public class Compiler {
       }
       return cmp;
     }
-
+    
     private PrintStmt printstm(){
       PrintStmt prt = null;
-      ArrayList<String> strg = new ArrayList<String>();
-      Factor aux3 = null;
-      StringBuffer frase = new StringBuffer();
-
-      if(lexer.token == Symbol.IBAR){
+      ArrayList<OrTest> o = new ArrayList<OrTest>();
+      while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        o.add(ortest());
+      }
+      if(lexer.token == Symbol.SEMICOLON){
         lexer.nextToken();
-        while(lexer.token != Symbol.IBAR || lexer.token != Symbol.SEMICOLON){
-          if(lexer.token == Symbol.IDENT){
-            frase.append(lexer.getNameVariable());
-          }else if(lexer.token == Symbol.NUMBER){
-            frase.append(lexer.getStringValue());
-          }
-          lexer.nextToken();
-        }
-        if(lexer.token != Symbol.IBAR){
-          //error()
-        }else{
-          lexer.nextToken();
-        }
-        if(lexer.token == Symbol.COMMA){
+      }else{
+        //error
+      }
+      prt = new PrintStmt(o);
+      return prt;
+    }
 
+    private OrTest ortest(){
+      OrTest ou = null;
+      String str = null;
+      ArrayList<AndTest> an = new ArrayList<AndTest>();
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        an.add(andtest());
+        if(lexer.token == Symbol.OR){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
         }
       }
-      aux = comparison();
-      aux2 = aux.getExpr();
-      prt = new PrintStmt(aux, t, c);
-      return prt;
+      ou = new OrTest(an, str);
+      return ou;
+    }
+
+    private AndTest andtest(){
+      String str = null;
+      AndTest an = null;
+      ArrayList<NotTest> no = new ArrayList<NotTest>();
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        no.add(nottest());
+        if(lexer.token == Symbol.AND){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
+        }
+      }
+      an = new AndTest(no, str);
+      return an;
+    }
+
+    private NotTest nottest(){
+      NotTest no = null;
+      Comparison co = null;
+      String str = null;
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        if(lexer.token == Symbol.NOT){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
+        }
+        co = comparison();
+      }
+      no = new NotTest(co, str);
+      return no;
     }
 
     private IfStmt ifstmt(){
@@ -351,72 +383,88 @@ public class Compiler {
       return co;
     }
 
-    /*Expr ::= Term {(’+’ | ’-’) Term}
-    Term ::= Factor {(’*’ | ’/’) Factor}*/
-    private ArrayList<Expr> expr(){
+    //Expr ::= Term {(’+’ | ’-’) Term}
+    private Expr expr(){
       Expr ex = null;
-      String op;
-      int flag = 0;
-      ArrayList<Expr> listexpr = new ArrayList<Expr>();
-      while(lexer.token != Symbol.SEMICOLON){
-        if(lexer.token == Symbol.COMMA){
-          break;
-        }else{
-          if(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            flag = 0;
-          }else if(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            flag = 0;
-          }else if(lexer.token == Symbol.LT || lexer.token == Symbol.GT){
-            op = lexer.getNameVariable();
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            flag = 0;
-          }else if((lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN) && flag == 0){
-            ex = new Expr(factor());
-            listexpr.add(ex);
-            flag = 1;
-          }else if(lexer.token == Symbol.SEMICOLON && flag == 1){
-            break;
-          }else if(lexer.token != Symbol.SEMICOLON && flag == 1){
-            //error
-            break;
-          }else if(flag == 0){
-            break;
-          }
+      Term t = null;
+      char ch = '\0';
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+        t = term();
+        if(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+          ch = lexer.getCharValue();
+          lexer.nextToken();
         }
       }
-      return listexpr;
+      ex = new Expr(t, ch);
+      return ex;
+    }
+
+    //Term ::= Factor {(’*’ | ’/’) Factor}
+    private Term term(){
+      Term t = null;
+      Factor f = null;
+      char ch = '\0';
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+        f = factor();
+        if(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
+          ch = lexer.getCharValue();
+          lexer.nextToken();
+        }
+      }
+      t = new Term(f, ch);
+      return t;
     }
 
     //Factor ::= [’+’|’-’] Atom {^ Factor}
-    //Atom ::= Name[ ‘[’(Number | Name)‘]’ ] | Number | String | ’True’ | ’False’
     private Factor factor(){
       Factor f = null;
-      if(lexer.token == Symbol.LT || lexer.token == Symbol.GT ||lexer.token == Symbol.MULT || lexer.token == Symbol.DIV|| lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS || lexer.token == Symbol.COMMA){
-        f = new Factor(lexer.getNameVariable());
+      Atom at = null;
+      char ch = '\0';
+
+      if(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+        ch = lexer.getCharValue();
         lexer.nextToken();
-      }else if(lexer.token ==Symbol.IDENT){
-          f = new Factor(name());
-        }else if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
-          f = new Factor(numbers());
-        }else if(lexer.token == Symbol.IBAR){
-          f = new Factor(string());
-        }else if(lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE){
-          f = new Factor(lexer.getNameVariable());
       }
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN){
+        at = atom();
+      }
+
+      if(lexer.token == Symbol.EXPONENCIAL){
+        lexer.nextToken();
+      }
+
+      f = new Factor(at, ch);
       return f;
     }
 
+    //Atom ::= Name[ ‘[’(Number | Name)‘]’ ] | Number | String | ’True’ | ’False’
+    private Atom atom(){
+      Atom at = null;
+      Numbers num = null;
+      String str = null;
+      char op = '\0'; // saber se eh variavel, uma frase, numero ou boolean---- b = bool, v = variavel, f = frase, n = numero
+
+      if(lexer.token == Symbol.IDENT){
+        op = 'v';
+        at = new Atom(name(), op);
+      }else if(lexer.token == Symbol.NUMBER){
+        op = 'n';
+        at = new Atom(numbers(), op);
+      }else if(lexer.token == Symbol.IBAR){
+        op = 'f';
+        at = new Atom(string(), op);
+      }else if(lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE){
+        op = 'b';
+        str = lexer.getNameVariable();
+        at = new Atom(str, op);
+        lexer.nextToken();
+      }
+
+    return at;
+    }
     //Type ::= ’N’ | ’F’ | ’S’
     private String type(){
       String ti = lexer.getNameVariable();
@@ -439,7 +487,7 @@ public class Compiler {
       String tok = null;
       if(lexer.token == Symbol.IBAR){
         lexer.nextToken();
-        while(lexer.token == Symbol.IDENT){
+        while(lexer.token != Symbol.IBAR && lexer.token != Symbol.SEMICOLON){
           ident.append(lexer.getNameVariable());
           lexer.nextToken();
         }
@@ -453,7 +501,7 @@ public class Compiler {
       return tok;
     }
     
-    //Number ::= [’+’ | ’-’] Digit [’.’ Digit]
+    //Number ::= [Signal] Digit{Digit} [’.’ Digit{Digit}]
     private Numbers numbers(){
       Numbers ret = null;
       String digito = null;
@@ -470,7 +518,7 @@ public class Compiler {
           lexer.nextToken();
         }
         if(lexer.token == Symbol.DOT){
-          ident.append(lexer.getNameVariable());
+          ident.append(lexer.getCharValue());
           lexer.nextToken();
           while(lexer.token == Symbol.NUMBER){
             ident.append(lexer.getStringValue());
@@ -483,6 +531,7 @@ public class Compiler {
       return ret;
     }
 
+    //Digit ::= ’0’ | ... | ’9’
     private int digit(){
       int dig = 0;
         if(lexer.token == Symbol.NUMBER){
