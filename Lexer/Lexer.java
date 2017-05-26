@@ -65,6 +65,7 @@ public class Lexer {
       keywordsTable.put( "string", Symbol.STRING );
       keywordsTable.put( "float", Symbol.FLOAT );
       keywordsTable.put("for", Symbol.FOR);
+      keywordsTable.put("inrange",Symbol.INRANGE);
     }
      
      

@@ -67,8 +67,8 @@ public enum Symbol {
       TRUE("true"),
       BOOLEAN("boolean"),
       INTEGER("integer"),
-      FOR("for");
-
+      FOR("for"),
+      INRANGE("inrange");
       Symbol(String name) {
           this.name = name;
       }
