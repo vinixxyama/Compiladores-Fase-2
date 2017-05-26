@@ -19,7 +19,7 @@ public class PrintStmt{
 			o.get(i).genC(pw);
 			i++;
 		}
-		pw.out.print(");");
+		pw.out.println(");");
 	}
 	
 	private ArrayList<OrTest> o;

@@ -321,7 +321,11 @@ public class Compiler {
       }else{
         //ERROR ATRIBUIÇAO SEM VALOR
       }
-      if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.IDENT || lexer.token == Symbol.IBAR || lexer.token == Symbol.LEFTBRACKETS){
+      if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.IDENT || lexer.token == Symbol.IBAR || lexer.token == Symbol.LEFTBRACKETS || lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
+        if(lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
+        	ident.append(lexer.getCharValue());
+        	lexer.nextToken();
+        }
         //verificar se variavel pode receber o valor
         for(i = 0;i<decl.size();i++){
           strg = decl.get(i).getArray();
@@ -336,8 +340,13 @@ public class Compiler {
                       ident.append(",");
                       lexer.nextToken();
                     }else{
-                      ident.append(lexer.getStringValue());
-                      lexer.nextToken();
+                    	if(lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
+				        	ident.append(lexer.getCharValue());
+				        	lexer.nextToken();
+				        }else{
+	                        ident.append(lexer.getStringValue());
+	                        lexer.nextToken();
+                  		}
                     }
                   }
                   ident.append("]");
