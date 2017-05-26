@@ -134,6 +134,9 @@ public class Compiler {
       }else if(lexer.token == Symbol.WHILE){
         tk = lexer.getNameVariable();
         cmp = new CompoundStmt(tk, whilestmt());
+      }else if(lexer.token == Symbol.FOR){
+       tk = lexer.getNameVariable();
+       cmp = new CompoundStmt(tk,forstmt());
       }
       return cmp;
     }
@@ -205,11 +208,12 @@ public class Compiler {
       IfStmt el = null;
       ArrayList<Stmt> st = new ArrayList<Stmt>();
       Comparison com = null;
+      OrTest or = null;
       char tk = ' ';
       //se tiver chave aberta do if continua senao da erro de sintaxe
       if(lexer.token == Symbol.IF){
         lexer.nextToken();
-        com = comparison();
+        or = ortest();
         if(lexer.token == Symbol.LEFTBRACES){
           tk = 'I';
           lexer.nextToken();
@@ -221,7 +225,7 @@ public class Compiler {
             char tk2 = 'L';
             el = new IfStmt(tk2, stmt());
           }
-          se = new IfStmt(tk, com, st, el);
+          se = new IfStmt(tk, or, st, el);
         }else{
           
         }
@@ -239,15 +243,67 @@ public class Compiler {
       }
       return se;
     }
-
+    private ForStmt forstmt(){
+      ForStmt fo = null;
+      String str = null;
+      Numbers nb1 = null;
+      Numbers nb2 = null;
+      ArrayList<Stmt> st = new ArrayList<Stmt>(); 
+      char tk = ' ';
+      tk = 'F';
+      lexer.nextToken();
+      if(lexer.token == Symbol.IDENT){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
+      }else{} //error
+          
+      if(lexer.token == Symbol.INRANGE){
+        lexer.nextToken();
+        if(lexer.token == Symbol.LEFTPAR){
+            lexer.nextToken();
+            if(lexer.token == Symbol.NUMBER){
+                nb1 = numbers();
+                if(lexer.token == Symbol.COMMA){
+                    lexer.nextToken();
+                    if(lexer.token == Symbol.NUMBER){
+                        nb2 = numbers();
+                        if(lexer.token == Symbol.RIGHTPAR){
+                            lexer.nextToken();
+                            if(lexer.token == Symbol.LEFTBRACES){
+                                lexer.nextToken();
+                                if(lexer.token == Symbol.IDENT || lexer.token == Symbol.PRINT || lexer.token == Symbol.BREAK || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE){
+                                    while(lexer.token != Symbol.RIGHTBRACES){
+                                        st.add(stmt());
+                                    }
+                                }
+                            }else{}//erro
+                                 
+                            if(lexer.token != Symbol.RIGHTBRACES){ //error
+                            }else{
+                                lexer.nextToken();
+                                fo = new ForStmt(tk, st, str,nb1,nb2);
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+     }else{
+      //error();
+      }
+      return fo;
+    }
+    
     private WhileStmt whilestmt(){
       WhileStmt wh = null;
       Comparison com = null;
+      OrTest or = null;
       ArrayList<Stmt> st = new ArrayList<Stmt>(); 
       char tk = ' ';
       tk = 'W';
       lexer.nextToken();
-      com = comparison();
+      or =  ortest();
       if(lexer.token == Symbol.LEFTBRACES){
         lexer.nextToken();
         if(lexer.token == Symbol.IDENT || lexer.token == Symbol.PRINT || lexer.token == Symbol.BREAK || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE){
@@ -262,7 +318,7 @@ public class Compiler {
         
       }
       lexer.nextToken();
-      wh = new WhileStmt(tk, st, com);
+      wh = new WhileStmt(tk, st, or);
       return wh;
     }
 
