@@ -14,7 +14,7 @@ public class IfStmt{
 			this.st = st;
 		}
 	}
-	public IfStmt(char k, OrTest or, ArrayList<Stmt> st, IfStmt el){
+	public IfStmt(char k, ArrayList<OrTest> or, ArrayList<Stmt> st, IfStmt el){
 		this.k = k;
 		this.or = or;
 		this.el = el;
@@ -35,9 +35,14 @@ public class IfStmt{
 	}
 
 	public void genC(PW pw){
+		int j=0;
 		if(k == 'I'){
 			pw.out.print("if(");
-			or.genC(pw);
+			while(j < or.size()){
+				or.get(j).genC(pw);
+				j++;
+			}
+			j=0;
 			pw.out.print("){\n");
 			for(int i=0;i<st.size();i++){
 				st.get(i).genC(pw);
@@ -60,6 +65,6 @@ public class IfStmt{
 	private Stmt st2;
 	private char k;
 	private IfStmt el;
-        private OrTest or;
+    private ArrayList<OrTest> or = new ArrayList<OrTest>();
         
 }

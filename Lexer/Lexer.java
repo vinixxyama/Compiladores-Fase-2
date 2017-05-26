@@ -181,11 +181,19 @@ public class Lexer {
                       if ( input[tokenPos] == '=' ) {
                         tokenPos++;
                         System.out.print("= ");
+                        ident.append(input[tokenPos]);
+                        nameVariable = ident.toString();
                         token = Symbol.LE;
-                      }
-                      else {
+                      }else if(input[tokenPos] == '>' ){
+                        tokenPos++;
+                        System.out.print("> ");
+                        ident.append(input[tokenPos]);
+                        nameVariable = ident.toString();
+                        token = Symbol.LTGT;
+                      }else{
                         if(input[tokenPos+1] == '=')
                           error.signal("Error: Bad Formation!");
+                        nameVariable = ident.toString();
                         token = Symbol.LT;
                       }
                       break;
@@ -193,11 +201,14 @@ public class Lexer {
                       if ( input[tokenPos] == '=' ) {
                         tokenPos++;
                         System.out.print("= ");
+                        ident.append(input[tokenPos]);
+                        nameVariable = ident.toString();
                         token = Symbol.GE;
                       }
                       else{
                         if(input[tokenPos+1] == '=')
                           error.signal("Error: Bad Formation!");
+                        nameVariable = ident.toString();
                         token = Symbol.GT;
                       }
                       break;
@@ -205,11 +216,13 @@ public class Lexer {
                       if ( input[tokenPos] == '=' ) {
                         tokenPos++;
                         System.out.print("= ");
+                        ident.append(input[tokenPos]);
+                        nameVariable = ident.toString();
                         token = Symbol.EQ;
-                      }
-                      else{
+                      }else{
                         if(input[tokenPos+1] == '=')
                           error.signal("Error: Bad Formation!");
+                        nameVariable = ident.toString();
                         token = Symbol.ASSIGN;
                       }
                       break;

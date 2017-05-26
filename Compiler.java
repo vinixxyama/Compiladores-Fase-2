@@ -126,19 +126,19 @@ public class Compiler {
     }
 
     private CompoundStmt compoundstmt(){
-      CompoundStmt cmp = null;
-      String tk;
-      if(lexer.token == Symbol.IF || lexer.token == Symbol.ELSE){
-        tk = lexer.getNameVariable();
-        cmp = new CompoundStmt(tk, ifstmt());
-      }else if(lexer.token == Symbol.WHILE){
-        tk = lexer.getNameVariable();
-        cmp = new CompoundStmt(tk, whilestmt());
-      }else if(lexer.token == Symbol.FOR){
-       tk = lexer.getNameVariable();
-       cmp = new CompoundStmt(tk,forstmt());
-      }
-      return cmp;
+	    CompoundStmt cmp = null;
+	    String tk = null;
+	    if(lexer.token == Symbol.IF || lexer.token == Symbol.ELSE){
+	        tk = lexer.getNameVariable();
+	        cmp = new CompoundStmt(tk, ifstmt());
+	    }else if(lexer.token == Symbol.WHILE){
+	        tk = lexer.getNameVariable();
+	        cmp = new CompoundStmt(tk, whilestmt());
+	    }else if(lexer.token == Symbol.FOR){
+		    tk = lexer.getNameVariable();
+		    cmp = new CompoundStmt(tk,forstmt());
+	    }
+    	return cmp;
     }
     
     private PrintStmt printstm(){
@@ -156,67 +156,23 @@ public class Compiler {
       return prt;
     }
 
-    private OrTest ortest(){
-      OrTest ou = null;
-      String str = null;
-      ArrayList<AndTest> an = new ArrayList<AndTest>();
-
-      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-        an.add(andtest());
-        if(lexer.token == Symbol.OR){
-          str = lexer.getNameVariable();
-          lexer.nextToken();
-        }
-      }
-      ou = new OrTest(an, str);
-      return ou;
-    }
-
-    private AndTest andtest(){
-      String str = null;
-      AndTest an = null;
-      ArrayList<NotTest> no = new ArrayList<NotTest>();
-
-      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-        no.add(nottest());
-        if(lexer.token == Symbol.AND){
-          str = lexer.getNameVariable();
-          lexer.nextToken();
-        }
-      }
-      an = new AndTest(no, str);
-      return an;
-    }
-
-    private NotTest nottest(){
-      NotTest no = null;
-      Comparison co = null;
-      String str = null;
-      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-        if(lexer.token == Symbol.NOT){
-          str = lexer.getNameVariable();
-          lexer.nextToken();
-        }
-        co = comparison();
-      }
-      no = new NotTest(co, str);
-      return no;
-    }
-
     private IfStmt ifstmt(){
       IfStmt se = null;
       IfStmt el = null;
       ArrayList<Stmt> st = new ArrayList<Stmt>();
-      Comparison com = null;
-      OrTest or = null;
-      char tk = ' ';
+      ArrayList<OrTest> or = new ArrayList<OrTest>();
+      char tk = '\0';
       //se tiver chave aberta do if continua senao da erro de sintaxe
       if(lexer.token == Symbol.IF){
         lexer.nextToken();
-        or = ortest();
+        while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        	System.out.println("AKI: "+ lexer.getNameVariable() +" akosoksa");
+        	or.add(ortest());
+    	}
         if(lexer.token == Symbol.LEFTBRACES){
           tk = 'I';
           lexer.nextToken();
+
           while(lexer.token != Symbol.RIGHTBRACES){
            st.add(stmt());
           }
@@ -432,10 +388,67 @@ public class Compiler {
       return novo;
     }
 
+    private OrTest ortest(){
+      OrTest ou = null;
+      String str = null;
+      ArrayList<AndTest> an = new ArrayList<AndTest>();
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        
+        an.add(andtest());
+        if(lexer.token == Symbol.OR){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
+        }
+      }
+      ou = new OrTest(an, str);
+      return ou;
+    }
+
+    private AndTest andtest(){
+      String str = null;
+      AndTest an = null;
+      ArrayList<NotTest> no = new ArrayList<NotTest>();
+
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        no.add(nottest());
+        if(lexer.token == Symbol.AND){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
+        }
+      }
+      an = new AndTest(no, str);
+      return an;
+    }
+
+    private NotTest nottest(){
+      NotTest no = null;
+      Comparison com = null;
+      String str = null;
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        if(lexer.token == Symbol.NOT){
+          str = lexer.getNameVariable();
+          lexer.nextToken();
+        }
+        com = comparison();
+      }
+      no = new NotTest(com, str);
+      return no;
+    }
+
     //COMPARISON
     private Comparison comparison(){
       Comparison co = null;
-      co = new Comparison(expr());
+      Expr ex = null;
+      String str = null;
+      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        ex = expr();
+        if(lexer.token == Symbol.LT || lexer.token == Symbol.LE || lexer.token == Symbol.GT || lexer.token == Symbol.GE || lexer.token == Symbol.EQ || lexer.token == Symbol.LTGT){
+          	str = lexer.getNameVariable();
+          	lexer.nextToken();
+        }
+      }
+      co = new Comparison(ex, str);
       return co;
     }
 
@@ -463,6 +476,7 @@ public class Compiler {
       char ch = '\0';
 
       if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+        
         f = factor();
         if(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
           ch = lexer.getCharValue();
@@ -533,7 +547,6 @@ public class Compiler {
       if(lexer.token == Symbol.IDENT){
         ctr = lexer.getNameVariable();
         lexer.nextToken();
-
       }
       return ctr;
     }

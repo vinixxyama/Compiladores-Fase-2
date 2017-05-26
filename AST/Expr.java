@@ -8,6 +8,7 @@ import java.util.*;
 public class Expr {
 	public Expr(Term t, char op){
 		this.t = t;
+        this.op = op;
 	}
 
     public void genC(PW pw){

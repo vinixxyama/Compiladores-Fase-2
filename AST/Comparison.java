@@ -7,12 +7,20 @@ package AST;
 import java.util.*;
 
 public class Comparison{
-	public Comparison(Expr ex){
+	public Comparison(Expr ex, String str){
 		this.ex = ex;
+		this.str = str;
 	}
 
 	public void genC(PW pw){
-		ex.genC(pw);
+		if(str == null){
+			ex.genC(pw);
+		}else{
+			ex.genC(pw);
+			pw.out.print(str+" ");
+		}
 	}
+
 	private Expr ex;
+	private String str;
 }

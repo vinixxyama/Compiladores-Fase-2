@@ -15,6 +15,7 @@ public enum Symbol {
       GE(">="),
       NEQ("!="),
       EQ("=="),
+      LTGT("<>"),
       ASSIGN("="),
       LEFTPAR("("),
       RIGHTPAR(")"),

@@ -19,18 +19,18 @@ public class CompoundStmt{
 		this.fo = fo;
 	}
 	public void genC(PW pw){
-		if(tk == "if" || tk == "else"){
+		if(tk.equals("if") || tk.equals("else")){
 			se.genC(pw);
 		}
 		if(tk == "while"){
 			wh.genC(pw);
 		}
-                if(tk == "for"){
-                        fo.genC(pw);
-                }
+        if(tk == "for"){
+        	fo.genC(pw);
+        }
 	}
 	private IfStmt se;
 	private String tk;
 	private WhileStmt wh;
-        private ForStmt fo;
+    private ForStmt fo;
 }

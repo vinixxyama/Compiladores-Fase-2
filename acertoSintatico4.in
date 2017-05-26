@@ -1,0 +1,9 @@
+program acertoSintatico4:
+
+int x;
+x = 18;
+
+if x < c {
+}
+
+end
