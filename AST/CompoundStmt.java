@@ -14,7 +14,10 @@ public class CompoundStmt{
 		this.tk = tk;
 		this.wh = wh;
 	}
-
+        public CompoundStmt(String tk, ForStmt fo){
+		this.tk = tk;
+		this.fo = fo;
+	}
 	public void genC(PW pw){
 		if(tk == "if" || tk == "else"){
 			se.genC(pw);
@@ -22,8 +25,12 @@ public class CompoundStmt{
 		if(tk == "while"){
 			wh.genC(pw);
 		}
+                if(tk == "for"){
+                        fo.genC(pw);
+                }
 	}
 	private IfStmt se;
 	private String tk;
 	private WhileStmt wh;
+        private ForStmt fo;
 }
