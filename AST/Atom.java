@@ -6,27 +6,40 @@ package AST;
 import java.util.*;
 
 public class Atom {
-	public Atom(Numbers num, char op){
-		this.num = num;
-		this.op = op;
-	}
-
 	public Atom(String str, char op){
 		this.str = str;
 		this.op = op;
 	}
 
+	public Atom(String str, char op, String tipo){
+		this.str = str;
+		this.op = op;
+		this.tipo = tipo;
+	}
+
+	public String getstring(){
+		return str;
+	}
+
+	public char getchar(){
+		return op;
+	}	
+
+	public String gettipo(){
+		return tipo;
+	}	
+
 	public void genC(PW pw){
 		if(op == 'b' || op == 'v'){
 			pw.out.print(str);
 		}else if(op == 'n'){
-			num.genC(pw);
+			pw.out.print(str);
 		}else if(op == 'f'){
-			pw.out.print("\""+str+"\"");
+			pw.out.print(str);
 		}
 	}
 
-    Numbers num;
-    String str;
-    char op;
+	private String tipo;
+    private String str;
+    private char op;
 }

@@ -7,6 +7,10 @@ public class NotTest{
 		this.str = str;
 	}
 
+	public Comparison getcom (){
+		return co;
+	}
+
 	public void genC(PW pw){
 		int i=0;
 		if(str != null){

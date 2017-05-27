@@ -11,6 +11,10 @@ public class Expr {
         this.op = op;
 	}
 
+    public Term getterm (){
+        return t;
+    }
+
     public void genC(PW pw){
     	if(op != '\0'){
     		t.genC(pw);

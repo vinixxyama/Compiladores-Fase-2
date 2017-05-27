@@ -12,6 +12,10 @@ public class Comparison{
 		this.str = str;
 	}
 
+	public Expr getexpr (){
+		return ex;
+	}
+
 	public void genC(PW pw){
 		if(str == null){
 			ex.genC(pw);

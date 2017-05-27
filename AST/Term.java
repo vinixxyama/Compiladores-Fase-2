@@ -11,6 +11,10 @@ public class Term{
 		this.op = op;
 	}
 
+    public Factor getfactor (){
+        return f;
+    }
+
 	public void genC(PW pw){
     	if(op != '\0'){
     		f.genC(pw);

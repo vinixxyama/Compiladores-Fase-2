@@ -11,6 +11,10 @@ public class Factor{
 		this.op = op;
 	}
 
+	public Atom getatom(){
+		return at;
+	}
+
 	public void genC(PW pw){
 		if(op != '\0'){
 			pw.out.print(op);
