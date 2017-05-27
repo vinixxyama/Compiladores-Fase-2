@@ -14,6 +14,11 @@ public class SimpleStmt{
 	public SimpleStmt (char tk){
 		this.tk = tk;
 	}
+	
+	public SimpleStmt (char tk, BreakStmt br){
+		this.tk = tk;
+		this.br = br;
+	}
 
 	public SimpleStmt (ExprStmt exstmt){
 		this.exstmt = exstmt;
@@ -27,12 +32,13 @@ public class SimpleStmt{
 				i++;
 			}
 		}else if(tk == 'B'){
-
+			br.genC(pw);
 		}else{
 			exstmt.genC(pw);
 		}
 	}
 	private ArrayList<PrintStmt> printStmt;
 	private ExprStmt exstmt;
+	private BreakStmt br;
 	private char tk;
 }

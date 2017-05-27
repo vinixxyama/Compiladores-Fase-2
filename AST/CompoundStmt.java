@@ -22,10 +22,10 @@ public class CompoundStmt{
 		if(tk.equals("if") || tk.equals("else")){
 			se.genC(pw);
 		}
-		if(tk == "while"){
+		if(tk.equals("while")){
 			wh.genC(pw);
 		}
-        if(tk == "for"){
+        if(tk.equals("for")){
         	fo.genC(pw);
         }
 	}

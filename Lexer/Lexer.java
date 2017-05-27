@@ -179,15 +179,15 @@ public class Lexer {
                       break;
                     case '<' :
                       if ( input[tokenPos] == '=' ) {
+                        ident.append(input[tokenPos]);
                         tokenPos++;
                         System.out.print("= ");
-                        ident.append(input[tokenPos]);
                         nameVariable = ident.toString();
                         token = Symbol.LE;
                       }else if(input[tokenPos] == '>' ){
+                        ident.append(input[tokenPos]);
                         tokenPos++;
                         System.out.print("> ");
-                        ident.append(input[tokenPos]);
                         nameVariable = ident.toString();
                         token = Symbol.LTGT;
                       }else{
@@ -199,9 +199,9 @@ public class Lexer {
                       break;
                     case '>' :
                       if ( input[tokenPos] == '=' ) {
+                        ident.append(input[tokenPos]);
                         tokenPos++;
                         System.out.print("= ");
-                        ident.append(input[tokenPos]);
                         nameVariable = ident.toString();
                         token = Symbol.GE;
                       }
@@ -214,10 +214,11 @@ public class Lexer {
                       break;
                     case '=' :
                       if ( input[tokenPos] == '=' ) {
+                        ident.append(input[tokenPos]);
                         tokenPos++;
                         System.out.print("= ");
-                        ident.append(input[tokenPos]);
                         nameVariable = ident.toString();
+                        System.out.print("o que tem: "+ nameVariable);
                         token = Symbol.EQ;
                       }else{
                         if(input[tokenPos+1] == '=')

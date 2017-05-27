@@ -6,29 +6,23 @@ package AST;
 import java.util.*;
 
 public class WhileStmt{
-	public WhileStmt(char tk, ArrayList<Stmt> st, Comparison com){
-		this.tk = tk;
-		this.st = st;
-		this.com = com;
-	}
-        public WhileStmt(char tk, ArrayList<Stmt> st, OrTest or){
-		this.tk = tk;
+        public WhileStmt(ArrayList<Stmt> st, ArrayList<OrTest> or){
 		this.st = st;
 		this.or = or;
 	}
 
 	public void genC(PW pw){
 		pw.out.print("while(");
-		or.genC(pw);
-		pw.out.print("){\n");
+		for(int i=0; i<or.size();i++){
+			or.get(i).genC(pw);
+		}
+		pw.out.println("){");
 		for(int i=0; i<st.size();i++){
 			st.get(i).genC(pw);
 		}
 		pw.out.print("\n}");
 	}
 
-	private char tk;
 	private ArrayList<Stmt> st;
-	private Comparison com;
-        private OrTest or;
+   	private ArrayList<OrTest> or;
 }

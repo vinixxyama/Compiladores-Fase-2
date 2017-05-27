@@ -15,7 +15,7 @@ for var2 inrange(10, 0) {
 	if var2 == 2 or var2 > 5 {
 		print var2;
 	}
-	if var <> 6 {
+	if var2 <> 6 {
 		print 'Diferente de 6';
 	}
 

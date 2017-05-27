@@ -17,7 +17,7 @@ public class Compiler {
         input = p_input;
 
         //instancia a nova HashTable para variaveis 
-        variableTable = new Hashtable<String, Variable>();
+        variableTable = new Hashtable<String, String>();
         error = new CompilerError(nameFile);
         lexer = new Lexer(input, error);
         error.setLexer(lexer);
@@ -112,6 +112,11 @@ public class Compiler {
       ArrayList<PrintStmt> pt = new ArrayList<PrintStmt>();
       if(lexer.token == Symbol.IDENT){
         si = new SimpleStmt(exprStmt());
+        if(lexer.token == Symbol.SEMICOLON){
+        	lexer.nextToken();
+        }else{
+        	//error
+        }
       }else if(lexer.token == Symbol.PRINT){
         tk = 'R';
         lexer.nextToken();
@@ -119,8 +124,7 @@ public class Compiler {
         si = new SimpleStmt(tk,pt);
       }else if(lexer.token == Symbol.BREAK){
         tk = 'B';
-        breakStmt();
-        si = new SimpleStmt(tk);
+        si = new SimpleStmt(tk, breakStmt());
       }
       return si;
     }
@@ -144,7 +148,8 @@ public class Compiler {
     private PrintStmt printstm(){
       PrintStmt prt = null;
       ArrayList<OrTest> o = new ArrayList<OrTest>();
-      while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+      OrTest vir = null;
+      while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.COMMA || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
         o.add(ortest());
       }
       if(lexer.token == Symbol.SEMICOLON){
@@ -166,7 +171,6 @@ public class Compiler {
       if(lexer.token == Symbol.IF){
         lexer.nextToken();
         while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-        	System.out.println("AKI: "+ lexer.getNameVariable() +" akosoksa");
         	or.add(ortest());
     	}
         if(lexer.token == Symbol.LEFTBRACES){
@@ -199,6 +203,7 @@ public class Compiler {
       }
       return se;
     }
+
     private ForStmt forstmt(){
       ForStmt fo = null;
       String str = null;
@@ -252,182 +257,163 @@ public class Compiler {
     }
     
     private WhileStmt whilestmt(){
-      WhileStmt wh = null;
-      Comparison com = null;
-      OrTest or = null;
-      ArrayList<Stmt> st = new ArrayList<Stmt>(); 
-      char tk = ' ';
-      tk = 'W';
-      lexer.nextToken();
-      or =  ortest();
-      if(lexer.token == Symbol.LEFTBRACES){
-        lexer.nextToken();
-        if(lexer.token == Symbol.IDENT || lexer.token == Symbol.PRINT || lexer.token == Symbol.BREAK || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE){
-          while(lexer.token != Symbol.RIGHTBRACES){
-            st.add(stmt());
-          }
-        }
-      }else{
-        
-      }
-      if(lexer.token != Symbol.RIGHTBRACES){
-        
-      }
-      lexer.nextToken();
-      wh = new WhileStmt(tk, st, or);
-      return wh;
-    }
+	    WhileStmt wh = null;
+	    ArrayList<OrTest> or = new ArrayList<OrTest>();
+	    ArrayList<Stmt> st = new ArrayList<Stmt>(); 
 
-    private void breakStmt(){
+	    lexer.nextToken();
+	    while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+	        or.add(ortest());
+	    }
+	    if(lexer.token == Symbol.LEFTBRACES){
+	        lexer.nextToken();
+	        if(lexer.token == Symbol.IDENT || lexer.token == Symbol.PRINT || lexer.token == Symbol.BREAK || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE){
+	          while(lexer.token != Symbol.RIGHTBRACES){
+	            st.add(stmt());
+	          }
+	        }
+	    }else{
+	        
+	    }
+	    if(lexer.token != Symbol.RIGHTBRACES){
+	        
+	    }
+	      lexer.nextToken();
+	      wh = new WhileStmt(st, or);
+	      return wh;
+	}
+
+    private BreakStmt breakStmt(){
+    	char tk = 'b';
+    	BreakStmt br = null;
       lexer.nextToken();
       if(lexer.token != Symbol.SEMICOLON){
-        
+        //error
       }else{
         lexer.nextToken();
       }
+      br = new BreakStmt(tk);
+      return br;
     }
 
-    //VAI TER QUE MEXER
     private ExprStmt exprStmt(){
-      ArrayList<String> strg = new ArrayList<String>();
-      Variable aux = null;
-      Numbers aux2 = null;
-      ExprStmt novo = null;
-      int i = 0;
-      String ctr1 = null;
-      String aux3 = null;
-      StringBuffer ident = new StringBuffer();
-      StringBuffer vet = new StringBuffer();
-      int flag = 0;
+    	ExprStmt exp = null;
+    	ExprStmt aux = null;
+    	Numbers aux2 = null;
+    	Variable v = null;
+    	ArrayList<OrTest> or = new ArrayList<OrTest>();
+    	ArrayList<String> strg = new ArrayList<String>();
+    	StringBuffer varia = new StringBuffer();
+    	StringBuffer valor = new StringBuffer();
+    	String var = null;
+    	String var2 = null;
+    	String val = null;
+    	int i = 0, j = 0, w = 0, k = 0;
 
-      ctr1 = name();
-      //se for vetor salva o vetor
-      if(lexer.token == Symbol.LEFTBRACKETS){
-        vet.append(ctr1);
-        vet.append("[");
-        lexer.nextToken();
-        while(lexer.token != Symbol.RIGHTBRACKETS){
-            vet.append(lexer.getStringValue());
-            lexer.nextToken();
-
-        }
-        vet.append("]");
-        lexer.nextToken();
-        flag = 1;
-      }
-      //ve se o proximo eh = se sim consome
-      if(lexer.token == Symbol.ASSIGN){
-        lexer.nextToken();
-      }else{
-        //ERROR ATRIBUIÇAO SEM VALOR
-      }
-      if(lexer.token == Symbol.NUMBER || lexer.token == Symbol.IDENT || lexer.token == Symbol.IBAR || lexer.token == Symbol.LEFTBRACKETS || lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
-        if(lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
-        	ident.append(lexer.getCharValue());
+    	if(lexer.token == Symbol.IDENT){
+    		var = name();
+    		varia.append(var);
+    		if(lexer.token == Symbol.LEFTBRACKETS){
+    			varia.append(exprList());
+	      }
+    	}
+    	if(lexer.token == Symbol.ASSIGN){
+    		lexer.nextToken();
+    	}
+    	if(lexer.token == Symbol.LEFTBRACKETS){
+        valor.append(exprList());
+      }else if(lexer.token == Symbol.IBAR || lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE ||lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
+      	if(lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
+        	valor.append(lexer.getCharValue());
         	lexer.nextToken();
         }
-        //verificar se variavel pode receber o valor
-        for(i = 0;i<decl.size();i++){
-          strg = decl.get(i).getArray();
-          for(int j=0;j<strg.size();j++){
-            if(ctr1.equals(strg.get(j))){
-              if((lexer.token == Symbol.NUMBER || lexer.token == Symbol.LEFTBRACKETS) && strg.get(0).equals("int")){
-                if(lexer.token == Symbol.LEFTBRACKETS){
-                  ident.append("[");
-                  lexer.nextToken();
-                  while(lexer.token != Symbol.RIGHTBRACKETS){
-                    if(lexer.token == Symbol.COMMA){
-                      ident.append(",");
-                      lexer.nextToken();
-                    }else{
-                    	if(lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
-				        	ident.append(lexer.getCharValue());
-				        	lexer.nextToken();
-				        }else{
-	                        ident.append(lexer.getStringValue());
-	                        lexer.nextToken();
-                  		}
-                    }
-                  }
-                  ident.append("]");
-                  lexer.nextToken();
-                }else{
-                  aux2 = numbers();
-                  ident.append(aux2.getReal());
-                }
-                aux3 = ident.toString();
-                if(flag == 1){
-                  ctr1 = vet.toString();
-                  aux = new Variable(ctr1, aux3);
-                }else{
-                  aux = new Variable(ctr1, aux3);
-                }
-              }else if(lexer.token == Symbol.IBAR && strg.get(0).equals("string")){
-                ident.append("'");
-                lexer.nextToken();
-                while(lexer.token !=  Symbol.IBAR){
-                  ident.append(lexer.getNameVariable());
-                  lexer.nextToken();
-                }
-                ident.append("'");
-                lexer.nextToken();
-                aux3 = ident.toString();
-                aux = new Variable(ctr1, aux3);
-                lexer.nextToken();
-              }else if(lexer.token == Symbol.NUMBER && strg.get(0).equals("float")){
-                aux2 = numbers();
-                aux = new Variable(ctr1, aux2.getReal());
-                
-              }else if(lexer.token == Symbol.IDENT && strg.get(0).equals("boolean")){
-                aux = new Variable(ctr1, lexer.getNameVariable());
-                lexer.nextToken();
-              }else{
-                //error valor nao bate com a variavel ex int recebendo string;
-              }
-            }
-          }
-        }
-      }else{
-        //error NADA DECLARADO;
+      	while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE){
+        	for(i = 0;i<decl.size();i++){
+	          strg = decl.get(i).getArray();
+	          for(j=0;j<strg.size();j++){
+	            if(var.equals(strg.get(j))){
+	              if(lexer.token == Symbol.NUMBER && strg.get(0).equals("int")){
+	                aux2 = numbers();
+	                valor.append(aux2.getReal());	
+	              }else if(lexer.token == Symbol.IBAR && strg.get(0).equals("string")){
+	                valor.append(string());
+	              }else if(lexer.token == Symbol.NUMBER && strg.get(0).equals("float")){
+	              	aux2 = numbers();
+	                valor.append(aux2.getReal());
+	              }else if((lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE)&& strg.get(0).equals("boolean")){
+	              	valor.append(lexer.getNameVariable());
+	              }else if(lexer.token == Symbol.IDENT){
+	              	or.add(ortest());
+	              }else{
+	              	//error valor imcompativel
+	              }
+	        		}
+	        	}
+        	}
+      	}
       }
-      if(lexer.token == Symbol.SEMICOLON){
-        lexer.nextToken();
+
+      var = varia.toString();
+      val = valor.toString();
+      v = new Variable(var, val);
+      exp = new ExprStmt(v, or);
+    	return exp;
+    }
+
+    private String exprList(){
+    	StringBuffer vet = new StringBuffer();
+    	String aux = null;
+
+  		vet.append("[");
+      lexer.nextToken();
+      while(lexer.token != Symbol.RIGHTBRACKETS){
+        if(lexer.token == Symbol.IDENT){
+      		vet.append(lexer.getNameVariable());
+          lexer.nextToken();
+      	}else{
+					vet.append(lexer.getStringValue());
+          lexer.nextToken();
+      	}
       }
-      novo = new ExprStmt(aux);
-      return novo;
+      vet.append("]");
+      lexer.nextToken();
+      aux = vet.toString();
+      return aux;
     }
 
     private OrTest ortest(){
-      OrTest ou = null;
-      String str = null;
-      ArrayList<AndTest> an = new ArrayList<AndTest>();
+    	OrTest ou = null;
+    	String str = null;
+    	ArrayList<AndTest> an = new ArrayList<AndTest>();
 
-      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-        
-        an.add(andtest());
-        if(lexer.token == Symbol.OR){
-          str = lexer.getNameVariable();
-          lexer.nextToken();
-        }
-      }
-      ou = new OrTest(an, str);
-      return ou;
+    	if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+	      an.add(andtest());
+	      if(lexer.token == Symbol.OR){
+	        str = lexer.getNameVariable();
+	        lexer.nextToken();
+	      }
+	    }else if(lexer.token == Symbol.COMMA){
+					str = ",";
+					lexer.nextToken();
+	    }
+	    ou = new OrTest(an, str);
+	    return ou;
     }
 
     private AndTest andtest(){
-      String str = null;
-      AndTest an = null;
-      ArrayList<NotTest> no = new ArrayList<NotTest>();
+    	String str = null;
+    	AndTest an = null;
+    	ArrayList<NotTest> no = new ArrayList<NotTest>();
 
-      if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-        no.add(nottest());
-        if(lexer.token == Symbol.AND){
-          str = lexer.getNameVariable();
-          lexer.nextToken();
-        }
-      }
-      an = new AndTest(no, str);
-      return an;
+    	if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+      	no.add(nottest());
+      	if(lexer.token == Symbol.AND){
+        	str = lexer.getNameVariable();
+        	lexer.nextToken();
+      	}
+    	}
+    	an = new AndTest(no, str);
+    	return an;
     }
 
     private NotTest nottest(){
@@ -631,7 +617,7 @@ public class Compiler {
     private String stringValue;
     private int numberValue;
     private Lexer lexer;
-    private Hashtable<String, Variable> variableTable; // variaveis criadas no sistema
+    private Hashtable<String, String> variableTable; // variaveis criadas no sistema
     private CompilerError error;
     
 }
