@@ -391,10 +391,10 @@ public class Compiler {
     private OrTest ortest(){
     	OrTest ou = null;
     	String str = null;
-    	ArrayList<AndTest> an = new ArrayList<AndTest>();
+    	AndTest an = null;
 
     	if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-	      an.add(andtest());
+	      an = andtest();
 	      if(lexer.token == Symbol.OR){
 	        str = lexer.getNameVariable();
 	        lexer.nextToken();
@@ -410,10 +410,10 @@ public class Compiler {
     private AndTest andtest(){
     	String str = null;
     	AndTest an = null;
-    	ArrayList<NotTest> no = new ArrayList<NotTest>();
+    	NotTest no = null;
 
     	if(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
-      	no.add(nottest());
+      	no = nottest();
       	if(lexer.token == Symbol.AND){
         	str = lexer.getNameVariable();
         	lexer.nextToken();
@@ -524,7 +524,8 @@ public class Compiler {
         at = new Atom(name(), op);
       }else if(lexer.token == Symbol.NUMBER){
         op = 'n';
-        at = new Atom(numbers(), op);
+        num = numbers();
+        at = new Atom(num.getReal(), op);
       }else if(lexer.token == Symbol.IBAR){
         op = 'f';
         at = new Atom(string(), op);
