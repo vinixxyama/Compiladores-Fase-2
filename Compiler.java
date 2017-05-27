@@ -44,7 +44,7 @@ public class Compiler {
               }
               lexer.nextToken();
             }
-            if(lexer.token == Symbol.IDENT || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.BREAK || lexer.token == Symbol.PRINT){
+            if(lexer.token == Symbol.IDENT || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.BREAK || lexer.token == Symbol.PRINT || lexer.token == Symbol.FOR){
               st.add(stmt());
             }
 
@@ -99,7 +99,7 @@ public class Compiler {
       if(lexer.token == Symbol.BREAK || lexer.token == Symbol.PRINT || lexer.token == Symbol.IDENT){
         tk = 'S';
         st = new Stmt(tk, simplestmt());
-      }else if(lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.ELSE){
+      }else if(lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.ELSE|| lexer.token == Symbol.FOR){
         tk = 'C';
         st = new Stmt(tk, compoundstmt()); 
       }
@@ -207,8 +207,8 @@ public class Compiler {
     private ForStmt forstmt(){
       ForStmt fo = null;
       String str = null;
-      Numbers nb1 = null;
-      Numbers nb2 = null;
+      int nb1 ;
+      int nb2 ;
       ArrayList<Stmt> st = new ArrayList<Stmt>(); 
       char tk = ' ';
       tk = 'F';
@@ -223,16 +223,18 @@ public class Compiler {
         if(lexer.token == Symbol.LEFTPAR){
             lexer.nextToken();
             if(lexer.token == Symbol.NUMBER){
-                nb1 = numbers();
+                nb1 = lexer.getNumberValue();
+                lexer.nextToken();
                 if(lexer.token == Symbol.COMMA){
                     lexer.nextToken();
                     if(lexer.token == Symbol.NUMBER){
-                        nb2 = numbers();
+                        nb2 = lexer.getNumberValue();
+                        lexer.nextToken();
                         if(lexer.token == Symbol.RIGHTPAR){
                             lexer.nextToken();
                             if(lexer.token == Symbol.LEFTBRACES){
                                 lexer.nextToken();
-                                if(lexer.token == Symbol.IDENT || lexer.token == Symbol.PRINT || lexer.token == Symbol.BREAK || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE){
+                                if(lexer.token == Symbol.IDENT || lexer.token == Symbol.PRINT || lexer.token == Symbol.BREAK || lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.FOR){
                                     while(lexer.token != Symbol.RIGHTBRACES){
                                         st.add(stmt());
                                     }

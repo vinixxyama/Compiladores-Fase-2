@@ -4,6 +4,8 @@ Daniel Valim    RA  511315
 */
 import AST.*;
 import java.io.*;
+import Lexer.*;
+import java.util.*;
 
 public class Main {
     
