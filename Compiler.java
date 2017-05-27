@@ -343,7 +343,9 @@ public class Compiler {
 	              }else if((lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE)&& strg.get(0).equals("boolean")){
 	              	valor.append(lexer.getNameVariable());
 	              }else if(lexer.token == Symbol.IDENT){
-	              	or.add(ortest());
+                  while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+                      or.add(ortest());
+                  }
 	              }else{
 	              	//error valor imcompativel
 	              }
@@ -370,10 +372,13 @@ public class Compiler {
         if(lexer.token == Symbol.IDENT){
       		vet.append(lexer.getNameVariable());
           lexer.nextToken();
-      	}else{
+      	}else if(lexer.token == Symbol.NUMBER){
 					vet.append(lexer.getStringValue());
           lexer.nextToken();
-      	}
+      	}else if(lexer.token == Symbol.COMMA){
+          vet.append(",");
+          lexer.nextToken();
+        }
       }
       vet.append("]");
       lexer.nextToken();

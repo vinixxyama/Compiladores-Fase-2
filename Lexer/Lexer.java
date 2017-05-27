@@ -86,7 +86,7 @@ public class Lexer {
           token = Symbol.EOF;
         else
           //ignora comentario //
-          if (input[tokenPos] == '/' && input[tokenPos + 1] == '/'){
+          if (input[tokenPos] == '#'){
             // comment found
             tokenPos+=2;
             while (input[tokenPos] != '\0'&& input[tokenPos] != '\n'){
