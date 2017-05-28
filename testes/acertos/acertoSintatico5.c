@@ -6,7 +6,7 @@ int p, babies;
 p = 1;
 babies = 1;
 while(babies<= 9){
-printf("Thisgenerationhas",babies,"babies");
+printf(" This generation has  %d ",," babies  %d ");
 p = babies;
 babies = p+babies;
 if(babies== 8){

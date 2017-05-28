@@ -10,7 +10,7 @@ d = [1,2,3];
 t = a+b;
 t = t*c/2;
 t = t+2;
-printf("sum=",t);
+printf(" sum =  %d ",t);
 
 return 0;
 }

@@ -149,7 +149,9 @@ public class Compiler {
       PrintStmt prt = null;
       ArrayList<OrTest> o = new ArrayList<OrTest>();
       OrTest vir = null;
+      String str = null;
       while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.COMMA || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
+        System.out.print("AKI:"+lexer.token);
         o.add(ortest());
       }
       if(lexer.token == Symbol.SEMICOLON){
@@ -310,6 +312,7 @@ public class Compiler {
     	String var = null;
     	String var2 = null;
     	String val = null;
+      String tipo = null;
     	int i = 0, j = 0, w = 0, k = 0;
 
     	if(lexer.token == Symbol.IDENT){
@@ -324,26 +327,39 @@ public class Compiler {
     	}
     	if(lexer.token == Symbol.LEFTBRACKETS){
         valor.append(exprList());
+        tipo = "vetor";
       }else if(lexer.token == Symbol.IBAR || lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE ||lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
       	if(lexer.token == Symbol.MINUS || lexer.token == Symbol.PLUS){
         	valor.append(lexer.getCharValue());
         	lexer.nextToken();
         }
       	while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE){
-        	for(i = 0;i<decl.size();i++){
+          for(i = 0;i<decl.size();i++){
 	          strg = decl.get(i).getArray();
 	          for(j=0;j<strg.size();j++){
 	            if(var.equals(strg.get(j))){
 	              if(lexer.token == Symbol.NUMBER && strg.get(0).equals("int")){
 	                aux2 = numbers();
-	                valor.append(aux2.getReal());	
+	                valor.append(aux2.getReal());
+                  tipo = strg.get(0);
+                  if(lexer.token == Symbol.EXPONENCIAL){
+                    valor.append("^");
+                    lexer.nextToken();
+                  }
 	              }else if(lexer.token == Symbol.IBAR && strg.get(0).equals("string")){
 	                valor.append(string());
+                  tipo = strg.get(0);
 	              }else if(lexer.token == Symbol.NUMBER && strg.get(0).equals("float")){
 	              	aux2 = numbers();
 	                valor.append(aux2.getReal());
+                  if(lexer.token == Symbol.EXPONENCIAL){
+                    valor.append("^");
+                    lexer.nextToken();
+                  }
+                  tipo = strg.get(0);
 	              }else if((lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE)&& strg.get(0).equals("boolean")){
 	              	valor.append(lexer.getNameVariable());
+                  tipo = strg.get(0);
 	              }else if(lexer.token == Symbol.IDENT){
                   while(lexer.token == Symbol.IDENT || lexer.token == Symbol.NUMBER || lexer.token == Symbol.IBAR || lexer.token == Symbol.BOOLEAN || lexer.token == Symbol.NOT){
                       or.add(ortest());
@@ -359,7 +375,7 @@ public class Compiler {
 
       var = varia.toString();
       val = valor.toString();
-      v = new Variable(var, val);
+      v = new Variable(var, val, tipo);
       exp = new ExprStmt(v, or);
     	return exp;
     }
@@ -399,9 +415,10 @@ public class Compiler {
 	        str = lexer.getNameVariable();
 	        lexer.nextToken();
 	      }
-	    }else if(lexer.token == Symbol.COMMA){
-					str = ",";
-					lexer.nextToken();
+        if(lexer.token == Symbol.COMMA){
+          str = ",";
+          lexer.nextToken();
+        }
 	    }
 	    ou = new OrTest(an, str);
 	    return ou;
@@ -504,35 +521,48 @@ public class Compiler {
         at = atom();
       }
 
-      if(lexer.token == Symbol.EXPONENCIAL){
-        lexer.nextToken();
-      }
-
       f = new Factor(at, ch);
       return f;
     }
 
     //Atom ::= Name[ ‘[’(Number | Name)‘]’ ] | Number | String | ’True’ | ’False’
     private Atom atom(){
+      int i=0,j=0;
       Atom at = null;
+      ArrayList<String> strg = new ArrayList<String>();
+      StringBuffer str2 = new StringBuffer();
       Numbers num = null;
       String str = null;
       char op = '\0'; // saber se eh variavel, uma frase, numero ou boolean---- b = bool, v = variavel, f = frase, n = numero
 
       if(lexer.token == Symbol.IDENT){
-        op = 'v';
-        at = new Atom(name(), op);
+        op = 'v';        
+        str = name();
+        str2.append(str);
+        for(i = 0;i<decl.size();i++){
+          strg = decl.get(i).getArray();
+          for(j=0;j<strg.size();j++){
+            if(str.equals(strg.get(j))){
+              tipo = strg.get(0);
+            }
+          }
+        }
+        if(lexer.token == Symbol.LEFTBRACKETS){
+          str2.append(exprList());
+          str = str.toString();
+        }
+        at = new Atom(str, op, tipo);
       }else if(lexer.token == Symbol.NUMBER){
         op = 'n';
         num = numbers();
-        at = new Atom(num.getReal(), op);
+        at = new Atom(num.getReal(), op, "numero");
       }else if(lexer.token == Symbol.IBAR){
         op = 'f';
-        at = new Atom(string(), op);
+        at = new Atom(string(), op, "frase");
       }else if(lexer.token == Symbol.TRUE || lexer.token == Symbol.FALSE){
         op = 'b';
         str = lexer.getNameVariable();
-        at = new Atom(str, op);
+        at = new Atom(str, op, "boolean");
         lexer.nextToken();
       }
 
@@ -561,6 +591,7 @@ public class Compiler {
         lexer.nextToken();
         while(lexer.token != Symbol.IBAR && lexer.token != Symbol.SEMICOLON){
           ident.append(lexer.getNameVariable());
+          ident.append(" ");
           lexer.nextToken();
         }
         tok = ident.toString();

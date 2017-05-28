@@ -20,17 +20,15 @@ public class OrTest{
 	}
 
 	public void genC(PW pw){
-		if(e == null){
+		if(str != null){
 			if(str.equals(",")){
-				pw.out.print(str);
-			}
-		}else{
-			if(str != null){
-				e.genC(pw);
 				pw.out.print(str);
 			}else{
 				e.genC(pw);
+				pw.out.print(str);
 			}
+		}else{
+			e.genC(pw);
 		}
 	}
 	

@@ -16,51 +16,57 @@ public class PrintStmt{
 		int i=0;
 		StringBuffer aux = new StringBuffer();
 		String frase = null;
+		String aux2 = null;
 		String sent = null;
 		String tipo = null;
 		char op = '\0';
-		// while(i < o.size()){
-		// 	e = o.get(i).getand();
-		// 	nt = e.getnot();
-		// 	co = nt.getcom();
-		// 	ex = co.getexpr();
-		// 	t = ex.getterm();
-		// 	f = t.getfactor();
-		// 	at = f.getatom();
-		// 	op = at.getchar();
-		// 	tipo = at.gettipo();
 
-		// 	if(op == 'v'){
-		// 		if(tipo.equals("string")){
-		// 			aux.append("%s ");
-		// 		}else if(tipo.equals("int")){
-		// 			aux.append("%d ");
-		// 		}else if(tipo.equals("float")){
-		// 			aux.append("%f ");
-		// 		}
-		// 	}
-		// 	i++;
-		// }
-		// sent = aux.toString();
-		// i=0;
+		while(i < o.size()){
+			e = o.get(i).getand();
+			nt = e.getnot();
+			co = nt.getcom();
+			ex = co.getexpr();
+			t = ex.getterm();
+			f = t.getfactor();
+			at = f.getatom();
+			op = at.getchar();
+			tipo = at.gettipo();
+
+			if(op == 'v'){
+				if(tipo.equals("string")){
+					aux.append("%s ");
+				}else if(tipo.equals("int")){
+					aux.append("%d ");
+				}else if(tipo.equals("float")){
+					aux.append("%f ");
+				}
+			}
+			i++;
+		}
+		sent = aux.toString();
+		i=0;
 		pw.out.print("printf(");
 		while(i<o.size()){
-			// e = o.get(i).getand();
-			// nt = e.getnot();
-			// co = nt.getcom();
-			// ex = co.getexpr();
-			// t = ex.getterm();
-			// f = t.getfactor();
-			// at = f.getatom();
-			// op = at.getchar();
-			// if(op == 'f'){
-			// 	frase = at.getstring();
-			// 	pw.out.print("\" "+frase+" "+ sent+ "\"");
-			// 	i++;
-			// }else{
+			e = o.get(i).getand();
+			nt = e.getnot();
+			co = nt.getcom();
+			ex = co.getexpr();
+			t = ex.getterm();
+			f = t.getfactor();
+			at = f.getatom();
+			op = at.getchar();
+			if(op == 'f'){
+				frase = at.getstring();
+				pw.out.print("\" "+frase+" "+ sent+ "\"");
+				aux2 = o.get(i).getstring();
+				if(aux2!= null){
+					pw.out.print(",");
+				}
+				i++;
+			}else{
 				o.get(i).genC(pw);
-			//}
-			i++;
+				i++;
+			}
 		}
 		pw.out.println(");");
 	}

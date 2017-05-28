@@ -16,7 +16,7 @@ public class ExprStmt {
 	public void genC(PW pw){
 		int i=0;
 		if(or.isEmpty()){
-		var.genC(pw);
+			var.genC(pw);
 		}else{
 			pw.out.print(var.getname()+" = ");
 			while(i < or.size()){
