@@ -12,7 +12,7 @@ printf(" Negative changed to zero ");
 if(x== 0){
 printf(" Zero found . Changing its value . ");
 x = 2^10;
-printf(x);
+printf(" %d ",x);
 
 }else{
 printf(" Do nothing ");

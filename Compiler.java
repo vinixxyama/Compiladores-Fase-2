@@ -31,7 +31,11 @@ public class Compiler {
       decl = new ArrayList<Declaration>();
       if (lexer.token == Symbol.PROGRAM){
         lexer.nextToken();
-        name();
+        if(lexer.token == Symbol.IDENT){
+          name();
+        }else{
+          error.signal("Falta o nome do programa");
+        }
         //’:’ Body ’E’
         if(lexer.token == Symbol.COLON){
           lexer.nextToken();
@@ -81,9 +85,13 @@ public class Compiler {
               varia.add("]");
               lexer.nextToken();
             }else{
+
               //error falta chaves
             }
           }
+        }else{
+          error.signal("Falta ; na declaracao");
+          break;
         }
         if(lexer.token == Symbol.COMMA){
           lexer.nextToken();
@@ -102,6 +110,8 @@ public class Compiler {
       }else if(lexer.token == Symbol.IF || lexer.token == Symbol.WHILE || lexer.token == Symbol.ELSE|| lexer.token == Symbol.FOR){
         tk = 'C';
         st = new Stmt(tk, compoundstmt()); 
+      }else if(lexer.token == Symbol.ELSE){
+        error.signal("else sem if");
       }
       return st;
     }
@@ -188,7 +198,7 @@ public class Compiler {
           }
           se = new IfStmt(tk, or, st, el);
         }else{
-          
+          error.signal("Falta abre chaves no if");
         }
       }else if(lexer.token == Symbol.ELSE){
         lexer.nextToken();
@@ -217,7 +227,9 @@ public class Compiler {
       if(lexer.token == Symbol.IDENT){
           str = lexer.getNameVariable();
           lexer.nextToken();
-      }else{} //error
+      }else{
+
+      } //error
           
       if(lexer.token == Symbol.INRANGE){
         lexer.nextToken();
@@ -248,6 +260,8 @@ public class Compiler {
                                 fo = new ForStmt(tk, st, str,nb1,nb2);
                             }
                         }
+                    }else{
+                      error.signal("Falta valor no inrange");
                     }
                 }
                 
@@ -375,6 +389,8 @@ public class Compiler {
 	        	}
         	}
       	}
+      }else{
+        error.signal("Falta valor depois de =");
       }
 
       var = varia.toString();
@@ -397,6 +413,9 @@ public class Compiler {
       	}else if(lexer.token == Symbol.NUMBER){
 					vet.append(lexer.getStringValue());
           lexer.nextToken();
+          if(lexer.token != Symbol.COMMA && lexer.token != Symbol.RIGHTBRACKETS){
+            error.signal("Falta , no vetor");
+          }
       	}else if(lexer.token == Symbol.COMMA){
           vet.append(",");
           lexer.nextToken();
@@ -469,6 +488,9 @@ public class Compiler {
         if(lexer.token == Symbol.LT || lexer.token == Symbol.LE || lexer.token == Symbol.GT || lexer.token == Symbol.GE || lexer.token == Symbol.EQ || lexer.token == Symbol.LTGT){
           	str = lexer.getNameVariable();
           	lexer.nextToken();
+            if(lexer.token != Symbol.IDENT && lexer.token != Symbol.NUMBER){
+              error.signal("Falta valor depois de <=");
+            }
         }
       }
       co = new Comparison(ex, str);
@@ -615,7 +637,10 @@ public class Compiler {
         tok = ident.toString();
         if(lexer.token == Symbol.IBAR)
           lexer.nextToken();
-        //else ERROR() AKI
+        else{
+          error.signal("Falta fechar aspas no print");
+
+        }
       }else{
         
       }

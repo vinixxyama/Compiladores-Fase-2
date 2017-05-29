@@ -1,4 +1,6 @@
-
+/*  Vinicius Yamamoto   RA:490105
+    Daniel Valim        RA:511315
+*/
 
 package AST;
 import Lexer.*;
@@ -22,9 +24,8 @@ public class CompilerError {
     }
     
     public void signal( String strMessage ) {
-        System.out.println("\nError in file: " + nameFile);
-        System.out.println(" \nError at line " + lexer.getLineNumber() + ": ");
-        System.out.println(lexer.getCurrentLine());
+        System.out.print("\nError in file: " + nameFile + ", ");
+        System.out.print(lexer.getLineNumber() +", ");
         System.out.println(strMessage );
         throw new RuntimeException(strMessage);
     }

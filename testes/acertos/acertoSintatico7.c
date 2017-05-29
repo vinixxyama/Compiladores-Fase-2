@@ -3,7 +3,7 @@
 
 int main(){
 int var1, guess, num;
-char str1[30];
+char str1[40];
 boolean achou;
 var1 = 0;
 guess = 0;

@@ -61,6 +61,9 @@ public class PrintStmt{
 				flag = 0;
 				sent = aux.toString();
 				strlist.add(sent);
+			}else if(flag == 0 && i >= o.size()){
+				sent = aux.toString();
+				strlist.add(sent);
 			}
 		}
 		i = 0;
@@ -90,6 +93,9 @@ public class PrintStmt{
 				}
 				i++;
 			}else{
+				if(strlist.get(0).equals("%d ") || strlist.get(0).equals("%s ") || strlist.get(0).equals("%f ")){
+					pw.out.print("\" "+strlist.get(j)+ "\",");
+				}
 				pw.out.print(at.getstring());
 				if(o.get(i).getstring() != null){
 					pw.out.print(",");

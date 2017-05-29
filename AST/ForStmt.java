@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*  Vinicius Yamamoto   RA:490105
+    Daniel Valim        RA:511315
+*/
 package AST;
 import Lexer.*;
-
 import java.util.*;
-/**
- *
- * @author Daniel
- */
+
 public class ForStmt {
     public ForStmt(char tk, ArrayList<Stmt> st, Comparison com){
 		this.tk = tk;
