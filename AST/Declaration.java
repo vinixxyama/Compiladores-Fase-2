@@ -23,11 +23,16 @@ public class Declaration {
 				pw.out.print(deck.get(i));
 				i++;
 			}else if(deck.get(i).equals("string")){
+				pw.out.print("char ");
+				i++;
+				pw.out.print(deck.get(i)+"[40]");
+				i++;
+			}else if(deck.get(i).equals("float")){
 				pw.out.print(deck.get(i)+" ");
 				i++;
 				pw.out.print(deck.get(i));
 				i++;
-			}else if(deck.get(i).equals("float")){
+			}else if(deck.get(i).equals("boolean")){
 				pw.out.print(deck.get(i)+" ");
 				i++;
 				pw.out.print(deck.get(i));
@@ -44,7 +49,11 @@ public class Declaration {
 					i++;
 				}else{
 					pw.out.print(", ");
-					pw.out.print(deck.get(i));
+					if(deck.get(0).equals("string")){
+						pw.out.print(deck.get(i)+"[40]");
+					}else{
+						pw.out.print(deck.get(i));
+					}
 					i++;
 				}
 			}else{

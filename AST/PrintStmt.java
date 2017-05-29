@@ -1,3 +1,4 @@
+
 /*
 Vinicius Yamamoto     RA 490105
 Daniel Valim    RA  511315
@@ -13,8 +14,9 @@ public class PrintStmt{
 	}
 
 	public void genC(PW pw){
-		int i=0;
+		int i=0, j=0, flag = 0;
 		StringBuffer aux = new StringBuffer();
+		ArrayList<String> strlist = new ArrayList<String>();
 		String frase = null;
 		String aux2 = null;
 		String sent = null;
@@ -41,10 +43,28 @@ public class PrintStmt{
 					aux.append("%f ");
 				}
 			}
+			if(op == 'f'){
+				if(flag == 1){
+					flag = 0;
+					sent = aux.toString();
+					strlist.add(sent);
+					aux = new StringBuffer();
+				}
+				if(flag == 0){
+					flag = 1;
+					frase = at.getstring();
+					aux.append(frase);
+				}
+			}
 			i++;
+			if(flag == 1 && i >= o.size()){
+				flag = 0;
+				sent = aux.toString();
+				strlist.add(sent);
+			}
 		}
-		sent = aux.toString();
-		i=0;
+		i = 0;
+		j = 0;
 		pw.out.print("printf(");
 		while(i<o.size()){
 			e = o.get(i).getand();
@@ -56,15 +76,24 @@ public class PrintStmt{
 			at = f.getatom();
 			op = at.getchar();
 			if(op == 'f'){
-				frase = at.getstring();
-				pw.out.print("\" "+frase+" "+ sent+ "\"");
+				if(!strlist.isEmpty()){	
+					if(j < strlist.size()){
+						pw.out.print("\" "+strlist.get(j)+ "\"");
+						j++;
+					}
+				}else{
+					pw.out.print("\""+aux.toString()+"\"");
+				}
 				aux2 = o.get(i).getstring();
 				if(aux2!= null){
 					pw.out.print(",");
 				}
 				i++;
 			}else{
-				o.get(i).genC(pw);
+				pw.out.print(at.getstring());
+				if(o.get(i).getstring() != null){
+					pw.out.print(",");
+				}
 				i++;
 			}
 		}

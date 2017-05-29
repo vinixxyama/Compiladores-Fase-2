@@ -14,7 +14,7 @@ achou = False;
 print 'Well, ' , str1 , ', I am thinking of a n between 1 and 100.';
 
 for var1 inrange(0, 50) {
-
+	
     if guess < num {
         print 'Your guess is too low.';
         guess = guess * 2;

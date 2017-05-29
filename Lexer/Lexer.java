@@ -44,8 +44,8 @@ public class Lexer {
       keywordsTable.put( "integer", Symbol.INTEGER );
       keywordsTable.put( "boolean", Symbol.BOOLEAN );
       keywordsTable.put( "char", Symbol.CHAR );
-      keywordsTable.put( "true", Symbol.TRUE );
-      keywordsTable.put( "false", Symbol.FALSE );
+      keywordsTable.put( "True", Symbol.TRUE );
+      keywordsTable.put( "False", Symbol.FALSE );
       keywordsTable.put( "and", Symbol.AND );
       keywordsTable.put( "or", Symbol.OR );
       keywordsTable.put( "not", Symbol.NOT );
@@ -113,7 +113,7 @@ public class Lexer {
               //percorre o token 
               while ( Character.isLetter( input[tokenPos]) || Character.isDigit( input[tokenPos]) || input[tokenPos]== '_'){
                   ident.append(input[tokenPos]);
-                  tokenPos++; 
+                  tokenPos++;
               }
               nameVariable = ident.toString();//converte para string e verifica se é palavra reservada
               System.out.print(nameVariable+" ");
@@ -218,7 +218,6 @@ public class Lexer {
                         tokenPos++;
                         System.out.print("= ");
                         nameVariable = ident.toString();
-                        System.out.print("o que tem: "+ nameVariable);
                         token = Symbol.EQ;
                       }else{
                         if(input[tokenPos+1] == '=')
